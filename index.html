@@ -6,13 +6,20 @@
       let el;
 
       ws.onmessage = (event) => {
-        el = document.getElementById('server-time');
-        el.innerHTML = 'Server time: ' + event.data;
+        const message = JSON.parse(event.data);
+
+        time_el = document.getElementById('server-time');
+        time_el.innerHTML = 'Server time: ' + message.time;
+
+        int_el = document.getElementById('integer');
+        int_el.innerHTML = message.int;
       };
     </script>
   </head>
 
   <body>
     <p id="server-time"></p>
+    <p>Here is a random integer between 0 and 999:</p>
+    <p id="integer"></p>
   </body>
 </html>

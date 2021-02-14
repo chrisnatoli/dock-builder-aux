@@ -15,8 +15,15 @@ wss.on('connection', (ws) => {
   ws.on('close', () => console.log('Client disconnected'));
 });
 
+
+let random_int = Math.floor(Math.random() * 1000)
+
 setInterval(() => {
   wss.clients.forEach((client) => {
-    client.send(new Date().toTimeString());
+    const message = {
+      time: new Date().toTimeString(),
+      int: random_int
+    };
+    client.send(JSON.stringify(message));
   });
 }, 1000);

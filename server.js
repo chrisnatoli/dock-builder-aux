@@ -16,14 +16,20 @@ wss.on('connection', (ws) => {
 });
 
 
-let random_int = Math.floor(Math.random() * 1000)
+let random_int = Math.floor(Math.random() * 1000);
 
 setInterval(() => {
   wss.clients.forEach((client) => {
+    time = new Date();
+    if (time.getSeconds() === 0) {
+      random_int = Math.floor(Math.random() * 1000)
+    }
+
     const message = {
-      time: new Date().toTimeString(),
+      time: time.toTimeString(),
       int: random_int
     };
+    
     client.send(JSON.stringify(message));
   });
 }, 1000);

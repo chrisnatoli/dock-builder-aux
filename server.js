@@ -10,41 +10,39 @@ const server = express()
 const wss = new Server({ server });
 
 
+let arr = [...Array(10).keys()];
+function shuffle(arr) {
+  let copy = [...arr];
+  let n = arr.length;
+
+  while (n) {
+    i = Math.floor(Math.random() * n);
+    n--;
+
+    tmp = copy[n];
+    copy[n] = copy[i];
+    copy[i] = tmp;
+  }
+
+  return copy;
+}
+
 wss.on('connection', (ws) => {
-  console.log('Client connected');
+  console.log(`Client connected, sending ${arr}`);
+
+  const outgoingMsg = { arr: arr };
+  ws.send(JSON.stringify(outgoingMsg));
 
   ws.on('message', (incomingMsg) => {
-    console.log('Received a message')
+    console.log('Received a message');
 
-    const num = Math.floor(Math.random() * 1000);
-    const outgoingMsg = {
-      num: num
-    };
+    arr = shuffle(arr);
+    const outgoingMsg = { arr: arr };
     wss.clients.forEach((client) => client.send(JSON.stringify(outgoingMsg)));
-    console.log(`Sent ${num}`)
+    console.log(`Sent ${arr}`)
   });
 
   ws.on('close', () => {
     console.log('Client disconnected');
   });
 });
-
-/*
-let num = Math.floor(Math.random() * 1000);
-
-setInterval(() => {
-  wss.clients.forEach((client) => {
-    time = new Date();
-    if (time.getSeconds() === 0) {
-      num = Math.floor(Math.random() * 1000)
-    }
-
-    const message = {
-      time: time.toTimeString(),
-      num: num
-    };
-
-    client.send(JSON.stringify(message));
-  });
-}, 1000);
-*/

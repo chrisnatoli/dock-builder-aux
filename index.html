@@ -3,23 +3,23 @@
     <script>
       let HOST = location.origin.replace(/^http/, 'ws');
       let ws = new WebSocket(HOST);
-      let el;
+
+      function sendMsg() {
+        const outgoingMsg = 0;
+        ws.send(outgoingMsg);
+        return false;
+      };
 
       ws.onmessage = (event) => {
-        const message = JSON.parse(event.data);
-
-        time_el = document.getElementById('server-time');
-        time_el.innerHTML = 'Server time: ' + message.time;
-
-        int_el = document.getElementById('integer');
-        int_el.innerHTML = message.int;
+        const incomingMsg = JSON.parse(event.data);
+        document.getElementById('number').innerHTML = incomingMsg.num;
       };
     </script>
   </head>
 
   <body>
-    <p id="server-time"></p>
-    <p>Here is a random integer between 0 and 999 that changes every minute:</p>
-    <p id="integer"></p>
+    <p id="number"></p>
+
+    <button type="submit" onclick="sendMsg()">New number</button>
   </body>
 </html>

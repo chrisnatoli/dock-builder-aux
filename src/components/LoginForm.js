@@ -1,5 +1,5 @@
 import React from 'react';
-import { VERIFY_USER } from '../SocketEvents';
+import { VERIFY_USER, USER_CONNECTED } from '../SocketEvents';
 
 class LoginForm extends React.Component {
   constructor(props) {
@@ -16,8 +16,20 @@ class LoginForm extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    console.log(`Sending VERIFY_USER request with username ${this.state.username}`);
-    this.props.socket.emit(VERIFY_USER, this.state.username);
+    this.props.socket.emit(VERIFY_USER,
+      this.state.username,
+      this.handleVerification
+    );
+  }
+
+  handleVerification = (username, isNameTaken) => {
+    if (isNameTaken) {
+      this.setState({ error: "This username is already taken." });
+    } else {
+      this.setState({ error: "" });
+      this.props.setUsername(username);
+      this.props.socket.emit(USER_CONNECTED, username);
+    }
   }
 
   render() {

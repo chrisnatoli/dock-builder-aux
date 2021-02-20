@@ -1,6 +1,7 @@
 import React from 'react';
 import './index.css';
 import io from 'socket.io-client';
+import LoginForm from './components/LoginForm';
 
 const socketUrl = "http://192.168.0.101:3030";
 
@@ -15,7 +16,7 @@ class App extends React.Component {
   componentDidMount() {
     const socket = io(socketUrl);
     socket.on('connect', () => {
-      console.log("Connected");
+      console.log("Connected to server");
     });
     this.setState({ socket });
   }
@@ -23,7 +24,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        app
+        <LoginForm socket={this.state.socket} />
       </div>
     );
   }

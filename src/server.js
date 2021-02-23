@@ -1,12 +1,16 @@
-const app = require('http').createServer();
-const io = require('socket.io')(app, { cors: { origin: '*' } });
-const { VERIFY_USER, USER_CONNECTED } = require('./SocketEvents');
+const express = require('express');
+const app = express();
+const server = require('http').Server(app);
+const io = require('socket.io')(server, { cors: { origin: '*' } });
 
 const PORT = process.env.PORT || 3030;
-app.listen(PORT, () => {
-  console.log(`Connected to port ${PORT}`);
-});
+//app.use(express.static(__dirname + '/../build')); // FOR BUILD
+app.use(express.static(__dirname + '/..'));        // FOR DEVELOPMENT
+server.listen(PORT, () => { console.log(`Connected to port ${PORT}`); });
 
+
+
+const { VERIFY_USER, USER_CONNECTED } = require('./SocketEvents');
 let users = [];
 
 io.on('connection', (socket) => {

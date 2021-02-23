@@ -3,7 +3,8 @@ import './index.css';
 import io from 'socket.io-client';
 import LoginForm from './components/LoginForm';
 
-const socketUrl = "http://192.168.0.101:3030";
+//const socketUrl = "/";                        // FOR BUILD
+const socketUrl = "http://192.168.0.101:3030"; // FOR DEVELOPMENT
 
 class App extends React.Component {
   constructor(props) {
@@ -33,7 +34,7 @@ class App extends React.Component {
         <LoginForm
           socket={this.state.socket}
           setUsername={this.setUsername}
-        />
+          />
       </div>
     );
   }

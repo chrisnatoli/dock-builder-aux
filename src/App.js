@@ -3,7 +3,11 @@ import './index.css';
 import io from 'socket.io-client';
 import LoginForm from './components/LoginForm';
 import UserList from './components/UserList';
-import { USER_RECONNECTED } from './SocketEvents';
+import {
+  USER_RECONNECTED,
+  USER_LOGGED_IN,
+  USER_DATA
+} from './SocketEvents';
 
 //const socketUrl = "/";                        // FOR BUILD
 const socketUrl = "http://192.168.0.101:3030"; // FOR DEVELOPMENT
@@ -13,38 +17,44 @@ class App extends React.Component {
     super(props);
     this.state = {
       socket: null,
-      username: null
+      user: null
     };
   }
 
   componentDidMount() {
     const socket = io(socketUrl);
+
     socket.on('connect', () => {
-      if (this.state.username) {
-        socket.emit(USER_RECONNECTED, this.state.username);
+      if (this.state.user) {
+        socket.emit(USER_RECONNECTED, this.state.user.name);
         console.log(`Reconnected to server, my socket ID is ${socket.id}`);
       } else {
         console.log(`Connected to server, my socket ID is ${socket.id}`);
       }
     });
+
+    socket.on(USER_DATA, user => this.setState({ user }));
+
     this.setState({ socket });
   }
 
-  setUsername = (username) => {
-    this.setState({ username });
+  createUser = (name) => {
+    const user = { name };
+    this.setState({ user });
+    this.state.socket.emit(USER_LOGGED_IN, user);
   }
 
   render() {
-    const { socket, username } = this.state;
+    const { socket, user } = this.state;
     return (
       <div className="App">
         {
-          !username
+          !user
           ?
-          <LoginForm socket={socket} setUsername={this.setUsername} />
+          <LoginForm socket={socket} createUser={this.createUser} />
           :
           <div className="layout">
-            <span>Logged in! Welcome {username}.</span>
+            <span>Logged in! Welcome {user.name}.</span>
             <UserList socket={socket} />
           </div>
         }

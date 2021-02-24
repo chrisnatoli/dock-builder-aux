@@ -1,34 +1,33 @@
 import React from 'react';
-import { VERIFY_USERNAME, USER_LOGGED_IN } from '../SocketEvents';
+import { VERIFY_USERNAME } from '../SocketEvents';
 
 class LoginForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: "",
+      name: "",
       error: ""
     };
   }
 
   handleChange = (event) => {
-    this.setState({ username: event.target.value });
+    this.setState({ name: event.target.value });
   }
 
   handleSubmit = (event) => {
     event.preventDefault();
     this.props.socket.emit(VERIFY_USERNAME,
-      this.state.username,
+      this.state.name,
       this.handleVerification
     );
   }
 
-  handleVerification = (username, isNameTaken) => {
+  handleVerification = (name, isNameTaken) => {
     if (isNameTaken) {
-      this.setState({ error: "This username is already taken." });
+      this.setState({ error: "This name is already taken." });
     } else {
       this.setState({ error: "" });
-      this.props.setUsername(username);
-      this.props.socket.emit(USER_LOGGED_IN, username);
+      this.props.createUser(name);
     }
   }
 

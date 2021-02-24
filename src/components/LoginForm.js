@@ -1,12 +1,13 @@
 import React from 'react';
-import { VERIFY_USERNAME } from '../SocketEvents';
+import { CHECK_USERNAME, USER_RECONNECTED } from '../SocketEvents';
 
 class LoginForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       name: "",
-      error: ""
+      error: "",
+      logBackInAs: ""
     };
   }
 
@@ -16,19 +17,29 @@ class LoginForm extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    this.props.socket.emit(VERIFY_USERNAME,
+    this.props.socket.emit(CHECK_USERNAME,
       this.state.name,
-      this.handleVerification
+      this.handleUsernameCheck
     );
   }
 
-  handleVerification = (name, isNameTaken) => {
+  handleUsernameCheck = (name, isNameTaken, isDisconnectedUser) => {
     if (isNameTaken) {
       this.setState({ error: "This name is already taken." });
+    } else if (isDisconnectedUser) {
+      this.setState({ error:
+        `A user with this name had disconnected. Are you trying to log back in as ${name}?`
+      })
+      this.setState({ logBackInAs: name });
     } else {
-      this.setState({ error: "" });
+      this.setState({ error: "", logBackIn: "" });
       this.props.createUser(name);
     }
+  }
+
+  handleLogBackIn = () => {
+    console.log(`Logging back in as ${this.state.logBackInAs}`);
+    this.props.socket.emit(USER_RECONNECTED, this.state.logBackInAs);
   }
 
   render() {
@@ -45,10 +56,15 @@ class LoginForm extends React.Component {
               />
           </label>
           <input type="submit" value="Submit" />
-          <div className="error">
-            {this.state.error}
-          </div>
         </form>
+
+        <div className="error">
+          {this.state.error}
+          { this.state.logBackInAs
+            ? <button onClick={this.handleLogBackIn}>Log back in</button>
+            : null
+          }
+        </div>
       </div>
     );
   }

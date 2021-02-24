@@ -11,7 +11,7 @@ server.listen(PORT, () => { console.log(`Connected to port ${PORT}`); });
 
 
 const {
-  VERIFY_USERNAME,
+  CHECK_USERNAME,
   USER_LOGGED_IN,
   UPDATE_USER_LIST,
   USER_RECONNECTED,
@@ -24,9 +24,10 @@ let disconnectedUsers = new Map();
 io.on('connection', (socket) => {
   console.log(`New socket connected (socket ID: ${socket.id})`);
 
-  socket.on(VERIFY_USERNAME, (username, callback) => {
-    const isNameTaken = users.has(username)
-    callback(username, isNameTaken);
+  socket.on(CHECK_USERNAME, (name, callback) => {
+    const isNameTaken = users.has(name);
+    const isDisconnectedUser = disconnectedUsers.has(name);
+    callback(name, isNameTaken, isDisconnectedUser);
   });
 
   socket.on(USER_LOGGED_IN, (user) => {
@@ -47,15 +48,15 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on(USER_RECONNECTED, (username) => {
-    if (disconnectedUsers.has(username)) {
-      user = disconnectedUsers.get(username);
-      disconnectedUsers = disconnectedUsers.delete(username);
-      users.set(username, user);
+  socket.on(USER_RECONNECTED, (name) => {
+    if (disconnectedUsers.has(name)) {
+      user = disconnectedUsers.get(name);
+      disconnectedUsers.delete(name);
+      users.set(name, user);
       socket.user = user;
 
+      socket.emit(USER_DATA, user);
       io.emit(UPDATE_USER_LIST, Array.from(users.keys()));
-      socket.emit(USER_DATA, user)
       console.log(`${user.name} reconnected`)
       console.log('User list: ', Array.from(users.keys()));
     }

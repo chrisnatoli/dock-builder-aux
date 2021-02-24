@@ -2,6 +2,7 @@ import React from 'react';
 import './index.css';
 import io from 'socket.io-client';
 import LoginForm from './components/LoginForm';
+import UserList from './components/UserList';
 
 //const socketUrl = "/";                        // FOR BUILD
 const socketUrl = "http://192.168.0.101:3030"; // FOR DEVELOPMENT
@@ -29,12 +30,11 @@ class App extends React.Component {
   }
 
   render() {
+    const { socket } = this.state;
     return (
       <div className="App">
-        <LoginForm
-          socket={this.state.socket}
-          setUsername={this.setUsername}
-          />
+        <LoginForm socket={socket} setUsername={this.setUsername} />
+        <UserList socket={socket} />
       </div>
     );
   }

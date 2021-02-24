@@ -10,8 +10,11 @@ server.listen(PORT, () => { console.log(`Connected to port ${PORT}`); });
 
 
 
-const { VERIFY_USER, USER_CONNECTED } = require('./SocketEvents');
-let users = [];
+const { VERIFY_USER,
+  USER_CONNECTED,
+  UPDATE_USER_LIST,
+} = require('./SocketEvents');
+let users = []; // Each user is an object with a socket and a username.
 
 io.on('connection', (socket) => {
   console.log(`Socket ID: ${socket.id}`);
@@ -23,6 +26,8 @@ io.on('connection', (socket) => {
 
   socket.on(USER_CONNECTED, (username) => {
     users.push({ socket, username });
+    userList = users.map(u => u.username);
+    io.emit(UPDATE_USER_LIST, userList);
     // Currently, a single socket can register multiple names because form doesn't disappear
   });
 });

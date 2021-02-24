@@ -9,11 +9,12 @@ class UserList extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidMount() {
     const { socket } = this.props;
     if (socket) {
       socket.on(UPDATE_USER_LIST, (userList) => {
         this.setState({ userList });
+        console.log(userList);
       });
     }
   }
@@ -21,7 +22,7 @@ class UserList extends React.Component {
   render() {
     const { userList } = this.state;
     return (
-      <div>{userList.join(', ')}</div>
+      <div>Players: {userList.join(', ')}</div>
     );
   }
 }

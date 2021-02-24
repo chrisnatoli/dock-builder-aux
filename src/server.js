@@ -14,20 +14,27 @@ const { VERIFY_USER,
   USER_CONNECTED,
   UPDATE_USER_LIST,
 } = require('./SocketEvents');
-let users = []; // Each user is an object with a socket and a username.
+let usernames = [];
 
 io.on('connection', (socket) => {
   console.log(`Socket ID: ${socket.id}`);
 
   socket.on(VERIFY_USER, (username, callback) => {
-    const isNameTaken = users.map(u => u.username).includes(username)
+    const isNameTaken = usernames.includes(username)
     callback(username, isNameTaken);
   });
 
   socket.on(USER_CONNECTED, (username) => {
-    users.push({ socket, username });
-    userList = users.map(u => u.username);
-    io.emit(UPDATE_USER_LIST, userList);
+    socket.username = username;
+    usernames.push(username);
+    io.emit(UPDATE_USER_LIST, usernames);
+    console.log(usernames);
     // Currently, a single socket can register multiple names because form doesn't disappear
+  });
+
+  socket.on('disconnect', () => {
+    usernames = usernames.filter(u => u !== socket.username);
+    io.emit(UPDATE_USER_LIST, usernames);
+    console.log(usernames);
   });
 });

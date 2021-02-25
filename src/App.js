@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import LoginForm from './components/LoginForm';
 import UserList from './components/UserList';
 import GameLog from './components/GameLog';
+import DiceContainer from './components/DiceContainer';
 
 import {
   USER_RECONNECTED,
@@ -62,6 +63,7 @@ class App extends React.Component {
           <div className="layout">
             <span>Logged in! Welcome {user.name}.</span>
             <UserList socket={socket} />
+            <DiceContainer socket={socket} />
             <GameLog socket={socket} />
             <br />
             <button onClick={this.sendAhoy}>Ahoy!</button>

@@ -1,4 +1,5 @@
 import React from 'react';
+import Die from './Die';
 
 const GREEN  = "green";
 const PURPLE = "purple";
@@ -12,11 +13,7 @@ class DiceContainer extends React.Component {
     const numDiceOfEachColor = 4;
     [GREEN, PURPLE, ORANGE].forEach((color) => {
       for (let i=0; i < numDiceOfEachColor; i++) {
-        const die = {
-          color,
-          value: null,
-          key: color + i,
-        };
+        const die = <Die dieColor={color} dieId={color + i} />;
         diceInBag.push(die);
       }
     });
@@ -34,26 +31,14 @@ class DiceContainer extends React.Component {
         <div>
           Dice in bag:
           <br />
-          {diceInBag.map(die => {
-            return (
-              <div key={die.key}>
-                {die.key}
-              </div>
-            );
-          })}
+          {diceInBag}
         </div>
 
         <br />
         <div>
           Dice on table:
           <br />
-          {diceOnTable.map(die => {
-            return (
-              <div key={die.key}>
-                {die.key}
-              </div>
-            );
-          })}
+          {diceOnTable}
         </div>
 
       </div>

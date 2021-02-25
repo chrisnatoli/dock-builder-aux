@@ -10,6 +10,18 @@ div.DiceContainer {
   padding: 10px;
 }
 
+span.purpleDie {
+  color: purple;
+}
+
+span.greenDie {
+  color: green;
+}
+
+span.orangeDie {
+  color: orange;
+}
+
 div.GameLog {
   display: inline-block;
   border-width: 1px;

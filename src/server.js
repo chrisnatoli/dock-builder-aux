@@ -16,6 +16,7 @@ const {
   UPDATE_USER_LIST,
   USER_RECONNECTED,
   USER_DATA,
+  GAME_LOG_MESSAGE,
 } = require('./SocketEvents');
 
 let users = new Map(); // username -> user object
@@ -34,8 +35,9 @@ io.on('connection', (socket) => {
     socket.user = user;
     users.set(user.name, user);
     io.emit(UPDATE_USER_LIST, Array.from(users.keys()));
-    console.log(`${user.name} logged in`)
+    console.log(`${user.name} logged in`);
     console.log('User list: ', Array.from(users.keys()));
+    gameLog(`${user.name} logged in.`);
   });
 
   socket.on('disconnect', () => {
@@ -43,8 +45,9 @@ io.on('connection', (socket) => {
       users.delete(socket.user.name);
       disconnectedUsers.set(socket.user.name, socket.user);
       io.emit(UPDATE_USER_LIST, Array.from(users.keys()));
-      console.log(`${socket.user.name} disconnected`)
+      console.log(`${socket.user.name} disconnected`);
       console.log('User list: ', Array.from(users.keys()));
+      gameLog(`${socket.user.name} disconnected.`);
     }
   });
 
@@ -57,8 +60,15 @@ io.on('connection', (socket) => {
 
       socket.emit(USER_DATA, user);
       io.emit(UPDATE_USER_LIST, Array.from(users.keys()));
-      console.log(`${user.name} reconnected`)
+      console.log(`${user.name} reconnected`);
       console.log('User list: ', Array.from(users.keys()));
+      gameLog(`${user.name} reconnected.`);
     }
   });
+
+  socket.on('ahoy', (name) => gameLog(`${name} says, Ahoy!`));
 });
+
+function gameLog(message) {
+  io.emit(GAME_LOG_MESSAGE, message);
+}

@@ -3,6 +3,8 @@ import './index.css';
 import io from 'socket.io-client';
 import LoginForm from './components/LoginForm';
 import UserList from './components/UserList';
+import GameLog from './components/GameLog';
+
 import {
   USER_RECONNECTED,
   USER_LOGGED_IN,
@@ -44,6 +46,10 @@ class App extends React.Component {
     this.state.socket.emit(USER_LOGGED_IN, user);
   }
 
+  sendAhoy = () => {
+    this.state.socket.emit('ahoy', this.state.user.name);
+  }
+
   render() {
     const { socket, user } = this.state;
     return (
@@ -56,6 +62,9 @@ class App extends React.Component {
           <div className="layout">
             <span>Logged in! Welcome {user.name}.</span>
             <UserList socket={socket} />
+            <GameLog socket={socket} />
+            <br />
+            <button onClick={this.sendAhoy}>Ahoy!</button>
           </div>
         }
       </div>

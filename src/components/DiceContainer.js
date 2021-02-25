@@ -1,5 +1,6 @@
 import React from 'react';
 import Die from './Die';
+import DieContainer from './DieContainer';
 
 const GREEN  = "green";
 const PURPLE = "purple";
@@ -13,7 +14,11 @@ class DiceContainer extends React.Component {
     const numDiceOfEachColor = 4;
     [GREEN, PURPLE, ORANGE].forEach((color) => {
       for (let i=0; i < numDiceOfEachColor; i++) {
-        const die = <Die dieColor={color} dieId={color + i} />;
+        const die = <Die
+          color={color}
+          id={this.props.username + "_" + color + i}
+          value={null}
+          />;
         diceInBag.push(die);
       }
     });
@@ -46,7 +51,7 @@ class DiceContainer extends React.Component {
           <p>Dice in bag:</p>
           {
             diceInBag.map((die, index) => (
-              <React.Fragment key={die.props.dieId}>{die}</React.Fragment>
+              <React.Fragment key={die.props.id}>{die}</React.Fragment>
             ))
           }
         </div>
@@ -58,8 +63,12 @@ class DiceContainer extends React.Component {
         <div className="DiceOnTableContainer">
           <p>Dice on table:</p>
           {
-            diceOnTable.map((die, index) => (
-              <React.Fragment key={die.props.dieId}>{die}</React.Fragment>
+            diceOnTable.map((die) => (
+              <DieContainer
+                key={die.props.id}
+                socket={this.props.socket}
+                die={die}
+                />
             ))
           }
         </div>

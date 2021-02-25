@@ -22,6 +22,19 @@ div.DiceOnTableContainer {
   margin-top: 24px;
 }
 
+div.DieContainer {
+  display: inline-block;
+  border-width: 1px;
+  border-style: solid;
+  border-color: gray;
+  padding: 10px;
+  margin: 5px;
+}
+
+div.DieContainer Button {
+  display: block;
+}
+
 span.Die {
   font-size: 32px;
 }

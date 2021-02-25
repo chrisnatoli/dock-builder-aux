@@ -3,16 +3,8 @@ import { FaDiceD6, FaDiceFour, FaDiceThree, FaDiceTwo,
   FaSquare } from 'react-icons/fa';
 
 class Die extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      value: null,
-    };
-  }
-
   dieIcon = () => {
-    switch(this.state.value) {
+    switch(this.props.value) {
       case "blank": return <FaSquare />;
       case "two":   return <FaDiceTwo />;
       case "four":  return <FaDiceFour />;
@@ -22,9 +14,9 @@ class Die extends React.Component {
   }
 
   render() {
-    const { dieColor } = this.props;
+    const { color } = this.props;
     return (
-      <span className="Die" style={{color: dieColor}}>
+      <span className="Die" style={{color: color}}>
         {this.dieIcon()}
       </span>
     );

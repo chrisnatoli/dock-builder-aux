@@ -14,7 +14,6 @@ class UserList extends React.Component {
     if (socket) {
       socket.on(UPDATE_USER_LIST, (userList) => {
         this.setState({ userList });
-        console.log(userList);
       });
     }
   }

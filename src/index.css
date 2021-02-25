@@ -1,5 +1,10 @@
 body {
   font-family: 'Lato', sans-serif;
+  font-size: 16px;
+}
+
+p {
+  margin: 4px;
 }
 
 div.DiceContainer {
@@ -10,16 +15,15 @@ div.DiceContainer {
   padding: 10px;
 }
 
-span.purpleDie {
-  color: purple;
+div.DiceInBagContainer {
 }
 
-span.greenDie {
-  color: green;
+div.DiceOnTableContainer {
+  margin-top: 24px;
 }
 
-span.orangeDie {
-  color: orange;
+span.Die {
+  font-size: 32px;
 }
 
 div.GameLog {

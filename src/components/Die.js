@@ -24,7 +24,7 @@ class Die extends React.Component {
   render() {
     const { dieColor } = this.props;
     return (
-      <span className={`Die ${dieColor}Die`}>
+      <span className="Die" style={{color: dieColor}}>
         {this.dieIcon()}
       </span>
     );

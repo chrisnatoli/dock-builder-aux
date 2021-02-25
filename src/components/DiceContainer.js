@@ -24,21 +24,44 @@ class DiceContainer extends React.Component {
     };
   }
 
+  drawDie = () => {
+    if (this.state.diceInBag.length > 0) {
+      this.setState((prevState, prevProps) => {
+        const { diceInBag, diceOnTable } = prevState;
+        const rand = Math.floor(Math.random() * diceInBag.length);
+        const die = diceInBag[rand];
+        return {
+          diceInBag: diceInBag.filter(d => d !== die),
+          diceOnTable: [...diceOnTable, die]
+        };
+      });
+    }
+  }
+
   render() {
     const { diceInBag, diceOnTable } = this.state;
     return (
       <div className="DiceContainer">
-        <div>
-          Dice in bag:
-          <br />
-          {diceInBag}
+        <div className="DiceInBagContainer">
+          <p>Dice in bag:</p>
+          {
+            diceInBag.map((die, index) => (
+              <React.Fragment key={die.props.dieId}>{die}</React.Fragment>
+            ))
+          }
         </div>
 
-        <br />
-        <div>
-          Dice on table:
-          <br />
-          {diceOnTable}
+        <button onClick={this.drawDie}>
+          Draw
+        </button>
+
+        <div className="DiceOnTableContainer">
+          <p>Dice on table:</p>
+          {
+            diceOnTable.map((die, index) => (
+              <React.Fragment key={die.props.dieId}>{die}</React.Fragment>
+            ))
+          }
         </div>
 
       </div>

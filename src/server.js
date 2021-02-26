@@ -13,7 +13,7 @@ server.listen(PORT, () => { console.log(`Connected to port ${PORT}`); });
 const {
   CHECK_USERNAME,
   USER_LOGGED_IN,
-  UPDATE_USER_LIST,
+  UPDATE_USERNAME_LIST,
   USER_RECONNECTED,
   USER_DATA,
   GAME_LOG_MESSAGE,
@@ -34,7 +34,7 @@ io.on('connection', (socket) => {
   socket.on(USER_LOGGED_IN, (user) => {
     socket.user = user;
     users.set(user.name, user);
-    io.emit(UPDATE_USER_LIST, Array.from(users.keys()));
+    io.emit(UPDATE_USERNAME_LIST, Array.from(users.keys()));
     console.log(`${user.name} logged in`);
     console.log('User list: ', Array.from(users.keys()));
     gameLog(`${user.name} logged in.`);
@@ -44,7 +44,7 @@ io.on('connection', (socket) => {
     if (socket.user) {
       users.delete(socket.user.name);
       disconnectedUsers.set(socket.user.name, socket.user);
-      io.emit(UPDATE_USER_LIST, Array.from(users.keys()));
+      io.emit(UPDATE_USERNAME_LIST, Array.from(users.keys()));
       console.log(`${socket.user.name} disconnected`);
       console.log('User list: ', Array.from(users.keys()));
       gameLog(`${socket.user.name} disconnected.`);
@@ -59,7 +59,7 @@ io.on('connection', (socket) => {
       socket.user = user;
 
       socket.emit(USER_DATA, user);
-      io.emit(UPDATE_USER_LIST, Array.from(users.keys()));
+      io.emit(UPDATE_USERNAME_LIST, Array.from(users.keys()));
       console.log(`${user.name} reconnected`);
       console.log('User list: ', Array.from(users.keys()));
       gameLog(`${user.name} reconnected.`);

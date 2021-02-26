@@ -2,14 +2,14 @@ import React from 'react';
 import './index.css';
 import io from 'socket.io-client';
 import LoginForm from './components/LoginForm';
-import UserList from './components/UserList';
 import GameLog from './components/GameLog';
 import DiceContainer from './components/DiceContainer';
 
 import {
   USER_RECONNECTED,
   USER_LOGGED_IN,
-  USER_DATA
+  USER_DATA,
+  UPDATE_USERNAME_LIST,
 } from './SocketEvents';
 
 //const socketUrl = "/";                        // FOR BUILD
@@ -20,7 +20,8 @@ class App extends React.Component {
     super(props);
     this.state = {
       socket: null,
-      user: null
+      user: null,
+      usernameList: [],
     };
   }
 
@@ -36,7 +37,13 @@ class App extends React.Component {
       }
     });
 
-    socket.on(USER_DATA, user => this.setState({ user }));
+    socket.on(USER_DATA,
+      user => this.setState({ user })
+    );
+
+    socket.on(UPDATE_USERNAME_LIST,
+      usernameList => this.setState({ usernameList })
+    );
 
     this.setState({ socket });
   }
@@ -52,7 +59,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { socket, user } = this.state;
+    const { socket, user, usernameList } = this.state;
     return (
       <div className="App">
         {
@@ -62,8 +69,10 @@ class App extends React.Component {
           :
           <div className="layout">
             <span>Logged in! Welcome {user.name}.</span>
-            <UserList socket={socket} />
+            <div>Players: {usernameList.join(', ')}</div>
+
             <DiceContainer socket={socket} username={user.name}/>
+
             <GameLog socket={socket} />
             <br />
             <button onClick={this.sendAhoy}>Ahoy!</button>

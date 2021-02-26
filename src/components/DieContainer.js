@@ -15,13 +15,10 @@ class DieContainer extends React.Component {
     this.setDieTo(newValue);
   }
 
-  putBack = () => {
-  }
-
   setDieTo = (value) => {
     this.setState((prevState, prevProps) => {
       const props = { ...prevState.die.props, value };
-      const die = <Die { ...props } />
+      const die = <Die { ...props } />;
       return { die };
     });
   }
@@ -32,7 +29,7 @@ class DieContainer extends React.Component {
       <div className="DieContainer">
         {die}
         <button onClick={this.roll}>Roll</button>
-        <button onClick={this.putBack}>Put back</button>
+        <button onClick={() => this.props.putBack(die)}>Put back</button>
       </div>
     );
   }

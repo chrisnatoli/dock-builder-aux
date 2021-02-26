@@ -43,6 +43,19 @@ class DiceContainer extends React.Component {
     }
   }
 
+  putBack = (die) => {
+    console.log("hi");
+    const props = { ...die.props, value: null };
+    const newDie = <Die { ...props } />;
+    this.setState((prevState, prevProps) => {
+      const { diceInBag, diceOnTable } = prevState;
+      return {
+        diceInBag: [...diceInBag, newDie],
+        diceOnTable: diceOnTable.filter(d => d.props.id !== newDie.props.id)
+      }
+    });
+  }
+
   render() {
     const { diceInBag, diceOnTable } = this.state;
     return (
@@ -68,6 +81,7 @@ class DiceContainer extends React.Component {
                 key={die.props.id}
                 socket={this.props.socket}
                 die={die}
+                putBack={this.putBack}
                 />
             ))
           }

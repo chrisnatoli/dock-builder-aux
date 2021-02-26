@@ -23,7 +23,7 @@ class DieIcon extends React.Component {
     }
 
     return (
-      <span className="Die" style={{color: this.props.die.color}}>
+      <span className="DieIcon" style={{color: this.props.die.color}}>
         {dieFace}
       </span>
     );

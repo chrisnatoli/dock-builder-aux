@@ -31,11 +31,16 @@ div.DieContainer {
   margin: 5px;
 }
 
-div.DieContainer Button {
+div.DieContainer button {
   display: block;
 }
 
-span.Die {
+div.DieContainer label {
+  display: block;
+  margin-top: 10px;
+}
+
+span.DieIcon {
   font-size: 32px;
 }
 

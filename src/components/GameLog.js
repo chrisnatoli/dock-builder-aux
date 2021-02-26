@@ -33,11 +33,9 @@ class GameLog extends React.Component {
         <h3>Game Log</h3>
         <div className="LogMessageContainer" ref={this.container}>
           {
-            this.state.logMessages.map((message, index) => {
-              return (
-                <div key={index} className="LogMessage">{message}</div>
-              );
-            })
+            this.state.logMessages.map((message, index) => (
+              <div key={index} className="LogMessage">{message}</div>
+            ))
           }
         </div>
       </div>

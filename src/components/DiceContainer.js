@@ -1,5 +1,5 @@
 import React from 'react';
-import Die from './Die';
+import DieIcon from './DieIcon';
 import DieContainer from './DieContainer';
 
 const GREEN  = "green";
@@ -11,14 +11,14 @@ class DiceContainer extends React.Component {
     super(props);
 
     const diceInBag = [];
-    const numDiceOfEachColor = 4;
+    const numDicePerColor = 4;
     [GREEN, PURPLE, ORANGE].forEach((color) => {
-      for (let i=0; i < numDiceOfEachColor; i++) {
-        const die = <Die
-          color={color}
-          id={this.props.username + "_" + color + i}
-          value={null}
-          />;
+      for (let i=0; i < numDicePerColor; i++) {
+        const die = {
+          color,
+          id: this.props.username + "_" + color + i,
+          value: null
+        };
         diceInBag.push(die);
       }
     });
@@ -44,15 +44,31 @@ class DiceContainer extends React.Component {
   }
 
   putBack = (die) => {
-    console.log("hi");
-    const props = { ...die.props, value: null };
-    const newDie = <Die { ...props } />;
+    const newDie = {...die, value: null}
     this.setState((prevState, prevProps) => {
       const { diceInBag, diceOnTable } = prevState;
       return {
         diceInBag: [...diceInBag, newDie],
-        diceOnTable: diceOnTable.filter(d => d.props.id !== newDie.props.id)
+        diceOnTable: diceOnTable.filter(d => d.id !== newDie.id)
       }
+    });
+  }
+
+  // Sets the value of a die that is on the table. Note that all dice in the bag
+  // have value null.
+  setDie = (die, newValue) => {
+    this.setState((prevState, prevProps) => {
+      const { diceOnTable } = prevState;
+      const updatedList = [];
+      diceOnTable.forEach((d) => {
+        if (d === die) {
+          const updatedDie = { ...die, value: newValue };
+          updatedList.push(updatedDie);
+        } else {
+          updatedList.push(d);
+        }
+      });
+      return { diceOnTable: updatedList };
     });
   }
 
@@ -62,26 +78,21 @@ class DiceContainer extends React.Component {
       <div className="DiceContainer">
         <div className="DiceInBagContainer">
           <p>Dice in bag:</p>
-          {
-            diceInBag.map((die, index) => (
-              <React.Fragment key={die.props.id}>{die}</React.Fragment>
-            ))
-          }
+          {diceInBag.map(die => <DieIcon key={die.id} die={die} />)}
         </div>
 
-        <button onClick={this.drawDie}>
-          Draw
-        </button>
+        <button onClick={this.drawDie}>Draw</button>
 
         <div className="DiceOnTableContainer">
           <p>Dice on table:</p>
           {
             diceOnTable.map((die) => (
               <DieContainer
-                key={die.props.id}
+                key={die.id}
                 socket={this.props.socket}
                 die={die}
                 putBack={this.putBack}
+                setDie={this.setDie}
                 />
             ))
           }

@@ -1,33 +1,19 @@
 import React from 'react';
-import Die from './Die';
+import DieIcon from './DieIcon';
 
 class DieContainer extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      die: this.props.die,
-    }
-  }
 
   roll = () => {
     const values = ["blank", "two", "two", "four", "four", "trio"];
     const newValue = values[Math.floor(Math.random() * values.length)];
-    this.setDieTo(newValue);
-  }
-
-  setDieTo = (value) => {
-    this.setState((prevState, prevProps) => {
-      const props = { ...prevState.die.props, value };
-      const die = <Die { ...props } />;
-      return { die };
-    });
+    this.props.setDie(this.props.die, newValue);
   }
 
   render() {
-    const { die } = this.state;
+    const { die } = this.props;
     return (
       <div className="DieContainer">
-        {die}
+        <DieIcon die={die} />
         <button onClick={this.roll}>Roll</button>
         <button onClick={() => this.props.putBack(die)}>Put back</button>
       </div>

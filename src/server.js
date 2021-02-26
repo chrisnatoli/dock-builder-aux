@@ -35,8 +35,6 @@ io.on('connection', (socket) => {
     socket.user = user;
     users.set(user.name, user);
     io.emit(UPDATE_USERNAME_LIST, Array.from(users.keys()));
-    console.log(`${user.name} logged in`);
-    console.log('User list: ', Array.from(users.keys()));
     gameLog(`${user.name} logged in.`);
   });
 
@@ -45,8 +43,6 @@ io.on('connection', (socket) => {
       users.delete(socket.user.name);
       disconnectedUsers.set(socket.user.name, socket.user);
       io.emit(UPDATE_USERNAME_LIST, Array.from(users.keys()));
-      console.log(`${socket.user.name} disconnected`);
-      console.log('User list: ', Array.from(users.keys()));
       gameLog(`${socket.user.name} disconnected.`);
     }
   });
@@ -60,8 +56,6 @@ io.on('connection', (socket) => {
 
       socket.emit(USER_DATA, user);
       io.emit(UPDATE_USERNAME_LIST, Array.from(users.keys()));
-      console.log(`${user.name} reconnected`);
-      console.log('User list: ', Array.from(users.keys()));
       gameLog(`${user.name} reconnected.`);
     }
   });

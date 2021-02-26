@@ -73,29 +73,42 @@ class DiceContainer extends React.Component {
   }
 
   render() {
+    const { socket, username, isForThisUser } = this.props;
     const { diceInBag, diceOnTable } = this.state;
+
+    let diceOnTableRendered;
+    if (isForThisUser) {
+      diceOnTableRendered = diceOnTable.map((die) => (
+        <DieContainer
+          key={die.id}
+          die={die}
+          putBack={this.putBack}
+          setDie={this.setDie}
+          />
+      ));
+    } else {
+      diceOnTableRendered = diceOnTable.map((die) => (
+        <DieIcon key={die.id} die={die} />
+      ));
+    }
+
     return (
       <div className="DiceContainer">
+        <h3>{`${username}'s dice`}</h3>
+
         <div className="DiceInBagContainer">
           <p>Dice in bag:</p>
           {diceInBag.map(die => <DieIcon key={die.id} die={die} />)}
         </div>
 
-        <button onClick={this.drawDie}>Draw</button>
+        {
+          isForThisUser &&
+          <button onClick={this.drawDie}>Draw</button>
+        }
 
         <div className="DiceOnTableContainer">
           <p>Dice on table:</p>
-          {
-            diceOnTable.map((die) => (
-              <DieContainer
-                key={die.id}
-                socket={this.props.socket}
-                die={die}
-                putBack={this.putBack}
-                setDie={this.setDie}
-                />
-            ))
-          }
+          {diceOnTableRendered}
         </div>
 
       </div>

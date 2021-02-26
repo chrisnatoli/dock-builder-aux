@@ -60,6 +60,8 @@ class App extends React.Component {
 
   render() {
     const { socket, user, usernameList } = this.state;
+    const otherUsernames = usernameList.filter(u => u !== user.name);
+
     return (
       <div className="App">
         {
@@ -71,7 +73,23 @@ class App extends React.Component {
             <span>Logged in! Welcome {user.name}.</span>
             <div>Players: {usernameList.join(', ')}</div>
 
-            <DiceContainer socket={socket} username={user.name}/>
+            <DiceContainer
+              socket={socket}
+              username={user.name}
+              isForThisUser={true}
+              />
+
+            <div className="DiceContainersForOtherUsers">
+              {
+                otherUsernames.map((username) => (
+                  <DiceContainer
+                    socket={socket}
+                    username={username}
+                    isForThisUser={false}
+                    />
+                ))
+              }
+            </div>
 
             <GameLog socket={socket} />
             <br />

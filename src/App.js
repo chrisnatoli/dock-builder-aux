@@ -60,7 +60,10 @@ class App extends React.Component {
 
   render() {
     const { socket, user, usernameList } = this.state;
-    const otherUsernames = usernameList.filter(u => u !== user.name);
+    let otherUsernames;
+    if (user) {
+      otherUsernames = usernameList.filter(u => u !== user.name);
+    }
 
     return (
       <div className="App">
@@ -83,6 +86,7 @@ class App extends React.Component {
               {
                 otherUsernames.map((username) => (
                   <DiceContainer
+                    key={username}
                     socket={socket}
                     username={username}
                     isForThisUser={false}

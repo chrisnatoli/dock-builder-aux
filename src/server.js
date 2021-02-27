@@ -17,6 +17,9 @@ const {
   USER_RECONNECTED,
   USER_DATA,
   GAME_LOG_MESSAGE,
+  DICE__TAKE_DIE,
+  DICE__PUT_BACK,
+  DICE__SET_DIE,
 } = require('./SocketEvents');
 
 let users = new Map(); // username -> user object
@@ -61,7 +64,30 @@ io.on('connection', (socket) => {
   });
 
   socket.on('ahoy', (name) => gameLog(`${name} says, Ahoy!`));
+
+
+
+  socket.on(DICE__TAKE_DIE, (die) => {
+    console.log(`${DICE__TAKE_DIE}: ${socket.user.name} is taking ${die.id}`);
+    console.log(`Broadcasting: ${DICE__TAKE_DIE}-${socket.user.name}`);
+    socket.broadcast.emit(`${DICE__TAKE_DIE}-${socket.user.name}`, die);
+  });
+
+  socket.on(DICE__PUT_BACK, (die) => {
+    console.log(`${DICE__PUT_BACK}: ${socket.user.name} is putting back ${die.id}`);
+    console.log(`Broadcasting: ${DICE__PUT_BACK}-${socket.user.name}`);
+    socket.broadcast.emit(`${DICE__PUT_BACK}-${socket.user.name}`, die);
+  });
+
+  socket.on(DICE__SET_DIE, (die, newValue) => {
+    console.log(`${DICE__SET_DIE}: ${socket.user.name} is setting ${die.id} to ${newValue}`);
+    console.log(`Broadcasting: ${DICE__SET_DIE}-${socket.user.name}`);
+    socket.broadcast.emit(`${DICE__SET_DIE}-${socket.user.name}`,
+      die, newValue);
+  });
 });
+
+
 
 function gameLog(message) {
   io.emit(GAME_LOG_MESSAGE, message);

@@ -22,6 +22,10 @@ div.DiceContainer {
   padding: 10px;
 }
 
+div.DiceContainersForOtherUsers div.DiceContainer {
+  display: inline-block;
+}
+
 div.DiceInBagContainer {
 }
 

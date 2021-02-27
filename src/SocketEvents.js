@@ -5,4 +5,7 @@ module.exports = {
   USER_RECONNECTED:    "USER_RECONNECTED",
   USER_DATA:           "USER_DATA",
   GAME_LOG_MESSAGE:    "GAME_LOG_MESSAGE",
+  DICE__SET_DIE:       "DICE__SET_DIE",
+  DICE__TAKE_DIE:      "DICE__TAKE_DIE",
+  DICE__PUT_BACK:      "DICE__PUT_BACK",
 };

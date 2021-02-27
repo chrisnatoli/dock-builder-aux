@@ -1,6 +1,7 @@
 import React from 'react';
 import DieIcon from './DieIcon';
 import DieContainer from './DieContainer';
+import { DICE__TAKE_DIE, DICE__PUT_BACK, DICE__SET_DIE } from '../SocketEvents';
 
 const GREEN  = "green";
 const PURPLE = "purple";
@@ -29,51 +30,94 @@ class DiceContainer extends React.Component {
     };
   }
 
-  drawDie = () => {
-    if (this.state.diceInBag.length > 0) {
-      this.setState((prevState, prevProps) => {
-        const { diceInBag, diceOnTable } = prevState;
-        const rand = Math.floor(Math.random() * diceInBag.length);
-        const die = diceInBag[rand];
-        return {
-          diceInBag: diceInBag.filter(d => d !== die),
-          diceOnTable: [...diceOnTable, die]
-        };
-      });
-    }
-  }
+  componentDidMount() {
+    const { socket, username } = this.props;
 
-  putBack = (die) => {
-    const newDie = {...die, value: null}
-    this.setState((prevState, prevProps) => {
-      const { diceInBag, diceOnTable } = prevState;
-      return {
-        diceInBag: [...diceInBag, newDie],
-        diceOnTable: diceOnTable.filter(d => d.id !== newDie.id)
-      }
+    const takeDieEvent = `${DICE__TAKE_DIE}-${username}`;
+    socket.on(takeDieEvent, (die) => {
+      console.log(`${takeDieEvent}`);
+      console.log(die);
+      this.takeDie(die)
+    });
+
+    const putBackEvent = `${DICE__PUT_BACK}-${username}`;
+    socket.on(putBackEvent, (die) => {
+      console.log(`${putBackEvent}`);
+      console.log(die);
+      this.putBack(die)
+    });
+
+    const setDieEvent = `${DICE__SET_DIE}-${username}`;
+    socket.on(setDieEvent, (die, newValue) => {
+      console.log(`${setDieEvent}`);
+      console.log(die);
+      this.setDie(die, newValue)
     });
   }
 
+
+
+  // Move die from diceInBag to diceOnTable.
+  takeDie = (die) => {
+    this.setState((prevState, prevProps) => ({
+      diceInBag: prevState.diceInBag.filter(d => d.id !== die.id),
+      diceOnTable: [...prevState.diceOnTable, die]
+    }));
+  }
+
+  drawDieAndAnnounce = () => {
+    const { diceInBag } = this.state;
+    const rand = Math.floor(Math.random() * diceInBag.length);
+    const die = diceInBag[rand];
+
+    this.takeDie(die);
+    this.props.socket.emit(DICE__TAKE_DIE, die);
+    console.log(die);
+  }
+
+  // Move die from diceOnTable to diceInBag.
+  putBack = (die) => {
+    const newDie = {...die, value: null}
+    this.setState((prevState, prevProps) => ({
+      diceInBag: [...prevState.diceInBag, newDie],
+      diceOnTable: prevState.diceOnTable.filter(d => d.id !== newDie.id)
+    }));
+  }
+
+  putBackAndAnnounce = (die) => {
+    this.putBack(die);
+    this.props.socket.emit(DICE__PUT_BACK, die);
+  }
+
   // Sets the value of a die that is on the table. Note that all dice in the bag
-  // have value null.
+  // have value null so they aren't considered.
   setDie = (die, newValue) => {
     this.setState((prevState, prevProps) => {
+      console.log(newValue);
       const { diceOnTable } = prevState;
       const updatedList = [];
       diceOnTable.forEach((d) => {
-        if (d === die) {
+        if (d.id === die.id) {
           const updatedDie = { ...die, value: newValue };
           updatedList.push(updatedDie);
         } else {
           updatedList.push(d);
         }
       });
+      console.log(updatedList);
       return { diceOnTable: updatedList };
     });
   }
 
+  setDieAndAnnounce = (die, newValue) => {
+    this.setDie(die, newValue);
+    this.props.socket.emit(DICE__SET_DIE, die, newValue);
+  }
+
+
+
   render() {
-    const { socket, username, isForThisUser } = this.props;
+    const { username, isForThisUser } = this.props;
     const { diceInBag, diceOnTable } = this.state;
 
     let diceOnTableRendered;
@@ -82,8 +126,8 @@ class DiceContainer extends React.Component {
         <DieContainer
           key={die.id}
           die={die}
-          putBack={this.putBack}
-          setDie={this.setDie}
+          putBack={this.putBackAndAnnounce}
+          setDie={this.setDieAndAnnounce}
           />
       ));
     } else {
@@ -91,6 +135,7 @@ class DiceContainer extends React.Component {
         <DieIcon key={die.id} die={die} />
       ));
     }
+
 
     return (
       <div className="DiceContainer">
@@ -103,7 +148,12 @@ class DiceContainer extends React.Component {
 
         {
           isForThisUser &&
-          <button onClick={this.drawDie}>Draw</button>
+          <button
+            onClick={this.drawDieAndAnnounce}
+            disabled={diceInBag.length===0}
+            >
+            Draw
+          </button>
         }
 
         <div className="DiceOnTableContainer">

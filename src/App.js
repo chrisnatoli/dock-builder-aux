@@ -12,8 +12,8 @@ import {
   UPDATE_USERNAME_LIST,
 } from './SocketEvents';
 
-const socketUrl = "/";                        // FOR BUILD
-//const socketUrl = "http://192.168.0.101:3030"; // FOR DEVELOPMENT
+//const socketUrl = "/";                        // FOR BUILD
+const socketUrl = "http://192.168.0.101:3030"; // FOR DEVELOPMENT
 
 class App extends React.Component {
   constructor(props) {

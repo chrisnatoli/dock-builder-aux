@@ -12,7 +12,7 @@ class GameLog extends React.Component {
 
   componentDidMount() {
     this.props.socket.on(GAME_LOG_MESSAGE, (message) => {
-      this.setState((prevState, prevProps) => (
+      this.setState(prevState => (
         { logMessages: [...prevState.logMessages, message] }
       ));
     });

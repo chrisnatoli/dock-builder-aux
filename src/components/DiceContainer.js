@@ -59,7 +59,7 @@ class DiceContainer extends React.Component {
 
   // Move die from diceInBag to diceOnTable.
   takeDie = (die) => {
-    this.setState((prevState, prevProps) => ({
+    this.setState(prevState => ({
       diceInBag: prevState.diceInBag.filter(d => d.id !== die.id),
       diceOnTable: [...prevState.diceOnTable, die]
     }));
@@ -78,7 +78,7 @@ class DiceContainer extends React.Component {
   // Move die from diceOnTable to diceInBag.
   putBack = (die) => {
     const newDie = {...die, value: null}
-    this.setState((prevState, prevProps) => ({
+    this.setState(prevState => ({
       diceInBag: [...prevState.diceInBag, newDie],
       diceOnTable: prevState.diceOnTable.filter(d => d.id !== newDie.id)
     }));
@@ -92,7 +92,7 @@ class DiceContainer extends React.Component {
   // Sets the value of a die that is on the table. Note that all dice in the bag
   // have value null so they aren't considered.
   setDie = (die, newValue) => {
-    this.setState((prevState, prevProps) => {
+    this.setState(prevState => {
       console.log(newValue);
       const { diceOnTable } = prevState;
       const updatedList = [];

@@ -8,6 +8,7 @@ module.exports = {
   UPDATE_USERNAME_LIST: "UPDATE_USERNAME_LIST",
   RESTORE_STATE:        "RESTORE_STATE",
   GAME_LOG_MESSAGE:     "GAME_LOG_MESSAGE",
+  UPDATE_DICE:          "UPDATE_DICE",
 
   // BOTH (concatenated with username when sent to client)
   DICE__SET_DIE:        "DICE__SET_DIE",

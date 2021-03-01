@@ -10,6 +10,7 @@ import {
   USER_LOGGED_IN,
   RESTORE_STATE,
   UPDATE_USERNAME_LIST,
+  UPDATE_DICE,
 } from './SocketEvents';
 
 //const socketUrl = "/";                        // FOR BUILD
@@ -22,6 +23,7 @@ class App extends React.Component {
       socket: null,
       username: null,
       usernameList: [],
+      diceDict: new Map(),
     };
   }
 
@@ -43,9 +45,17 @@ class App extends React.Component {
     socket.on(UPDATE_USERNAME_LIST,
       usernameList => this.setState({ usernameList })
     );
+
+    socket.on(UPDATE_DICE, (username, dice) => {
+      this.setState((prevState) => {
+        const copy = new Map(prevState.diceDict);
+        copy.set(username, dice);
+        return { diceDict: copy };
+      });
+    });
   }
 
-  createUser = (username) => {
+  setUsername = (username) => {
     this.setState({ username });
     this.state.socket.emit(USER_LOGGED_IN, username);
   }
@@ -55,7 +65,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { socket, username, usernameList } = this.state;
+    const { socket, username, usernameList, diceDict } = this.state;
     let otherUsernames;
     if (username) {
       otherUsernames = usernameList.filter(u => u !== username);
@@ -66,7 +76,7 @@ class App extends React.Component {
         {
           !username
           ?
-          <LoginForm socket={socket} createUser={this.createUser} />
+          <LoginForm socket={socket} setUsername={this.setUsername} />
           :
           <div className="layout">
             <span>Logged in! Welcome {username}.</span>
@@ -75,6 +85,7 @@ class App extends React.Component {
             <DiceContainer
               socket={socket}
               username={username}
+              dice={diceDict.get(username)}
               isForThisUser={true}
               />
 
@@ -85,6 +96,7 @@ class App extends React.Component {
                     key={username}
                     socket={socket}
                     username={username}
+                    dice={diceDict.get(username)}
                     isForThisUser={false}
                     />
                 ))

@@ -16,6 +16,7 @@ const {
   UPDATE_USERNAME_LIST,
   USER_RECONNECTED,
   RESTORE_STATE,
+  UPDATE_DICE,
   GAME_LOG_MESSAGE,
   DICE__TAKE_DIE,
   DICE__PUT_BACK,
@@ -24,6 +25,7 @@ const {
 
 let usernames = [];
 let disconnectedUsers = [];
+let diceDict = new Map();  // username => dice array
 
 io.on('connection', (socket) => {
   console.log(`New socket connected (socket ID: ${socket.id})`);
@@ -39,6 +41,10 @@ io.on('connection', (socket) => {
     usernames = [...usernames, username];
     io.emit(UPDATE_USERNAME_LIST, usernames);
     gameLog(`${username} logged in.`);
+
+    const dice = startingDice(username)
+    diceDict.set(username, dice)
+    io.emit(UPDATE_DICE, username, dice);
   });
 
   socket.on('disconnect', () => {
@@ -86,4 +92,21 @@ io.on('connection', (socket) => {
 
 function gameLog(message) {
   io.emit(GAME_LOG_MESSAGE, message);
+}
+
+function startingDice(username) {
+  const dice = [];
+  const numDicePerColor = 4;
+  ["green", "purple", "orange"].forEach((color) => {
+    for (let i=0; i < numDicePerColor; i++) {
+      const die = {
+        id: username + "_" + color + i,
+        color,
+        value: null,
+        isOnTable: false,
+      };
+      dice.push(die);
+    }
+  });
+  return dice;
 }

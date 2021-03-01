@@ -3,33 +3,9 @@ import DieIcon from './DieIcon';
 import DieContainer from './DieContainer';
 import { DICE__TAKE_DIE, DICE__PUT_BACK, DICE__SET_DIE } from '../SocketEvents';
 
-const GREEN  = "green";
-const PURPLE = "purple";
-const ORANGE = "orange";
-
 class DiceContainer extends React.Component {
-  constructor(props) {
-    super(props);
 
-    const diceInBag = [];
-    const numDicePerColor = 4;
-    [GREEN, PURPLE, ORANGE].forEach((color) => {
-      for (let i=0; i < numDicePerColor; i++) {
-        const die = {
-          color,
-          id: this.props.username + "_" + color + i,
-          value: null
-        };
-        diceInBag.push(die);
-      }
-    });
-
-    this.state = {
-      diceInBag,
-      diceOnTable: [],
-    };
-  }
-
+  /*
   componentDidMount() {
     const { socket, username } = this.props;
 
@@ -54,9 +30,10 @@ class DiceContainer extends React.Component {
       this.setDie(die, newValue)
     });
   }
+  */
 
 
-
+  /*
   // Move die from diceInBag to diceOnTable.
   takeDie = (die) => {
     this.setState(prevState => ({
@@ -113,21 +90,25 @@ class DiceContainer extends React.Component {
     this.setDie(die, newValue);
     this.props.socket.emit(DICE__SET_DIE, die, newValue);
   }
+  */
 
 
 
   render() {
-    const { username, isForThisUser } = this.props;
-    const { diceInBag, diceOnTable } = this.state;
+    const { socket, username, dice, isForThisUser } = this.props;
+    let diceInBag = [], diceOnTable = [];
+    if (dice) {
+      diceInBag = dice.filter(d => !d.isOnTable);
+      diceOnTable = dice.filter(d => d.isOnTable);
+    }
 
     let diceOnTableRendered;
     if (isForThisUser) {
       diceOnTableRendered = diceOnTable.map((die) => (
         <DieContainer
           key={die.id}
+          socket={socket}
           die={die}
-          putBack={this.putBackAndAnnounce}
-          setDie={this.setDieAndAnnounce}
           />
       ));
     } else {
@@ -148,19 +129,13 @@ class DiceContainer extends React.Component {
 
         {
           isForThisUser &&
-          <button
-            onClick={this.drawDieAndAnnounce}
-            disabled={diceInBag.length===0}
-            >
-            Draw
-          </button>
+          <button disabled={diceInBag.length===0}>Draw</button>
         }
 
         <div className="DiceOnTableContainer">
           <p>Dice on table:</p>
           {diceOnTableRendered}
         </div>
-
       </div>
     );
   }

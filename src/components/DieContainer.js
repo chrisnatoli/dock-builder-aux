@@ -7,17 +7,23 @@ class DieContainer extends React.Component {
     this.state = ({ selectedValue: "cube" });
   }
 
+  putBack = () => {
+  }
+
   roll = () => {
     const values = ["blank", "two", "two", "four", "four", "trio"];
-    const newValue = values[Math.floor(Math.random() * values.length)];
-    this.props.setDie(this.props.die, newValue);
-    this.setState({ selectedValue: newValue });
+    const randomValue = values[Math.floor(Math.random() * values.length)];
+    this.setState({ selectedValue: randomValue });
+    this.setDie(randomValue);
   }
 
   handleChange = (event) => {
     const selectedValue = event.target.value;
-    this.props.setDie(this.props.die, selectedValue);
     this.setState({ selectedValue });
+    this.setDie(selectedValue);
+  }
+
+  setDie = (newValue) => {
   }
 
   render() {
@@ -26,7 +32,7 @@ class DieContainer extends React.Component {
       <div className="DieContainer">
         <DieIcon die={die} />
 
-        <button onClick={() => this.props.putBack(die)}>Put back</button>
+        <button onClick={this.putBack}>Put back</button>
         <button onClick={this.roll}>Roll</button>
 
         <label>Set value:</label>

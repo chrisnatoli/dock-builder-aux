@@ -33,7 +33,7 @@ class LoginForm extends React.Component {
       this.setState({ logBackInAs: username });
     } else {
       this.setState({ error: "", logBackInAs: "" });
-      this.props.createUser(username);
+      this.props.setUsername(username);
     }
   }
 

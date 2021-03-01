@@ -18,7 +18,7 @@ const {
   RESTORE_STATE,
   UPDATE_DICE,
   GAME_LOG_MESSAGE,
-  DICE__TAKE_DIE,
+  DICE__DRAW_DIE,
   DICE__PUT_BACK,
   DICE__SET_DIE,
 } = require('./SocketEvents');
@@ -44,7 +44,14 @@ io.on('connection', (socket) => {
 
     const dice = startingDice(username)
     diceDict.set(username, dice)
-    io.emit(UPDATE_DICE, username, dice);
+
+    // Inform other users of new user
+    socket.broadcast.emit(UPDATE_DICE, username, dice);
+
+    // Inform new user of entire game state
+    diceDict.forEach((d, u) => {
+      socket.emit(UPDATE_DICE, u, d);
+    });
   });
 
   socket.on('disconnect', () => {
@@ -74,10 +81,22 @@ io.on('connection', (socket) => {
 
 
 
-  socket.on(DICE__TAKE_DIE, (die) => {
-    socket.broadcast.emit(`${DICE__TAKE_DIE}-${socket.username}`, die);
+  socket.on(DICE__DRAW_DIE, (die) => {
+    const dice = diceDict.get(socket.username);
+    const diceCopy = [];
+    dice.forEach((d) => {
+      if (d.id === die.id) {
+        diceCopy.push({ ...d, isOnTable: true });
+      } else {
+        diceCopy.push({ ...d });
+      }
+    });
+
+    diceDict.set(socket.username, diceCopy);
+    io.emit(UPDATE_DICE, socket.username, diceCopy);
   });
 
+  /*
   socket.on(DICE__PUT_BACK, (die) => {
     socket.broadcast.emit(`${DICE__PUT_BACK}-${socket.username}`, die);
   });
@@ -86,6 +105,7 @@ io.on('connection', (socket) => {
     socket.broadcast.emit(`${DICE__SET_DIE}-${socket.username}`,
       die, newValue);
   });
+  */
 });
 
 

@@ -8,7 +8,7 @@ import DiceContainer from './components/DiceContainer';
 import {
   USER_RECONNECTED,
   USER_LOGGED_IN,
-  USER_DATA,
+  RESTORE_STATE,
   UPDATE_USERNAME_LIST,
 } from './SocketEvents';
 
@@ -20,65 +20,61 @@ class App extends React.Component {
     super(props);
     this.state = {
       socket: null,
-      user: null,
+      username: null,
       usernameList: [],
     };
   }
 
   componentDidMount() {
     const socket = io(socketUrl);
+    this.setState({ socket });
 
     socket.on('connect', () => {
-      if (this.state.user) {
-        socket.emit(USER_RECONNECTED, this.state.user.name);
+      if (this.state.username) {
+        socket.emit(USER_RECONNECTED, this.state.username);
         console.log(`Reconnected to server, my socket ID is ${socket.id}`);
       } else {
         console.log(`Connected to server, my socket ID is ${socket.id}`);
       }
     });
 
-    socket.on(USER_DATA,
-      user => this.setState({ user })
-    );
+    socket.on(RESTORE_STATE, username => this.setState({ username }));
 
     socket.on(UPDATE_USERNAME_LIST,
       usernameList => this.setState({ usernameList })
     );
-
-    this.setState({ socket });
   }
 
-  createUser = (name) => {
-    const user = { name };
-    this.setState({ user });
-    this.state.socket.emit(USER_LOGGED_IN, user);
+  createUser = (username) => {
+    this.setState({ username });
+    this.state.socket.emit(USER_LOGGED_IN, username);
   }
 
   sendAhoy = () => {
-    this.state.socket.emit('ahoy', this.state.user.name);
+    this.state.socket.emit('ahoy', this.state.username);
   }
 
   render() {
-    const { socket, user, usernameList } = this.state;
+    const { socket, username, usernameList } = this.state;
     let otherUsernames;
-    if (user) {
-      otherUsernames = usernameList.filter(u => u !== user.name);
+    if (username) {
+      otherUsernames = usernameList.filter(u => u !== username);
     }
 
     return (
       <div className="App">
         {
-          !user
+          !username
           ?
           <LoginForm socket={socket} createUser={this.createUser} />
           :
           <div className="layout">
-            <span>Logged in! Welcome {user.name}.</span>
+            <span>Logged in! Welcome {username}.</span>
             <div>Players: {usernameList.join(', ')}</div>
 
             <DiceContainer
               socket={socket}
-              username={user.name}
+              username={username}
               isForThisUser={true}
               />
 

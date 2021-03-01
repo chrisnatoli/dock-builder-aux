@@ -5,41 +5,42 @@ class LoginForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: "",
+      username: "",
       error: "",
       logBackInAs: ""
     };
   }
 
   handleChange = (event) => {
-    this.setState({ name: event.target.value });
+    this.setState({ username: event.target.value });
   }
 
   handleSubmit = (event) => {
     event.preventDefault();
     this.props.socket.emit(CHECK_USERNAME,
-      this.state.name,
+      this.state.username,
       this.handleUsernameCheck
     );
   }
 
-  handleUsernameCheck = (name, isNameTaken, isDisconnectedUser) => {
-    if (isNameTaken) {
-      this.setState({ error: "This name is already taken." });
+  handleUsernameCheck = (username, isUsernameTaken, isDisconnectedUser) => {
+    if (isUsernameTaken) {
+      this.setState({ error: "This username is already taken." });
     } else if (isDisconnectedUser) {
       this.setState({ error:
-        `A user with this name had disconnected. Are you trying to log back in as ${name}?`
-      })
-      this.setState({ logBackInAs: name });
+        `A user with this name had disconnected. Are you trying to log back in as ${username}?`
+      });
+      this.setState({ logBackInAs: username });
     } else {
-      this.setState({ error: "", logBackIn: "" });
-      this.props.createUser(name);
+      this.setState({ error: "", logBackInAs: "" });
+      this.props.createUser(username);
     }
   }
 
   handleLogBackIn = () => {
-    console.log(`Logging back in as ${this.state.logBackInAs}`);
-    this.props.socket.emit(USER_RECONNECTED, this.state.logBackInAs);
+    const username = this.state.logBackInAs;
+    console.log(`Logging back in as ${username}`);
+    this.props.socket.emit(USER_RECONNECTED, username);
   }
 
   render() {

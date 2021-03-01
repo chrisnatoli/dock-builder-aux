@@ -6,7 +6,7 @@ module.exports = {
 
   // TO CLIENT
   UPDATE_USERNAME_LIST: "UPDATE_USERNAME_LIST",
-  USER_DATA:            "USER_DATA",
+  RESTORE_STATE:        "RESTORE_STATE",
   GAME_LOG_MESSAGE:     "GAME_LOG_MESSAGE",
 
   // BOTH (concatenated with username when sent to client)

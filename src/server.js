@@ -15,74 +15,69 @@ const {
   USER_LOGGED_IN,
   UPDATE_USERNAME_LIST,
   USER_RECONNECTED,
-  USER_DATA,
+  RESTORE_STATE,
   GAME_LOG_MESSAGE,
   DICE__TAKE_DIE,
   DICE__PUT_BACK,
   DICE__SET_DIE,
 } = require('./SocketEvents');
 
-let users = new Map(); // username -> user object
-let disconnectedUsers = new Map();
+let usernames = [];
+let disconnectedUsers = [];
 
 io.on('connection', (socket) => {
   console.log(`New socket connected (socket ID: ${socket.id})`);
 
-  socket.on(CHECK_USERNAME, (name, callback) => {
-    const isNameTaken = users.has(name);
-    const isDisconnectedUser = disconnectedUsers.has(name);
-    callback(name, isNameTaken, isDisconnectedUser);
+  socket.on(CHECK_USERNAME, (username, callback) => {
+    const isUsernameTaken = usernames.includes(username);
+    const isDisconnectedUser = disconnectedUsers.includes(username);
+    callback(username, isUsernameTaken, isDisconnectedUser);
   });
 
-  socket.on(USER_LOGGED_IN, (user) => {
-    socket.user = user;
-    users.set(user.name, user);
-    io.emit(UPDATE_USERNAME_LIST, Array.from(users.keys()));
-    gameLog(`${user.name} logged in.`);
+  socket.on(USER_LOGGED_IN, (username) => {
+    socket.username = username;
+    usernames = [...usernames, username];
+    io.emit(UPDATE_USERNAME_LIST, usernames);
+    gameLog(`${username} logged in.`);
   });
 
   socket.on('disconnect', () => {
-    if (socket.user) {
-      users.delete(socket.user.name);
-      disconnectedUsers.set(socket.user.name, socket.user);
-      io.emit(UPDATE_USERNAME_LIST, Array.from(users.keys()));
-      gameLog(`${socket.user.name} disconnected.`);
+    if (socket.username) {
+      usernames = usernames.filter(u => u !== socket.username);
+      disconnectedUsers = [...disconnectedUsers, socket.username];
+      io.emit(UPDATE_USERNAME_LIST, usernames);
+      gameLog(`${socket.username} disconnected.`);
     }
   });
 
-  socket.on(USER_RECONNECTED, (name) => {
-    if (disconnectedUsers.has(name)) {
-      user = disconnectedUsers.get(name);
-      disconnectedUsers.delete(name);
-      users.set(name, user);
-      socket.user = user;
+  socket.on(USER_RECONNECTED, (username) => {
+    if (disconnectedUsers.includes(username)) {
+      disconnectedUsers = disconnectedUsers.filter(u => u !== username);
+      usernames = [...usernames, username];
+      socket.username = username;
 
-      socket.emit(USER_DATA, user);
-      io.emit(UPDATE_USERNAME_LIST, Array.from(users.keys()));
-      gameLog(`${user.name} reconnected.`);
+      // Send entire game state (TO DO)
+      socket.emit(RESTORE_STATE, username);
+
+      io.emit(UPDATE_USERNAME_LIST, usernames);
+      gameLog(`${username} reconnected.`);
     }
   });
 
-  socket.on('ahoy', (name) => gameLog(`${name} says, Ahoy!`));
+  socket.on('ahoy', (username) => gameLog(`${username} says, Ahoy!`));
 
 
 
   socket.on(DICE__TAKE_DIE, (die) => {
-    console.log(`${DICE__TAKE_DIE}: ${socket.user.name} is taking ${die.id}`);
-    console.log(`Broadcasting: ${DICE__TAKE_DIE}-${socket.user.name}`);
-    socket.broadcast.emit(`${DICE__TAKE_DIE}-${socket.user.name}`, die);
+    socket.broadcast.emit(`${DICE__TAKE_DIE}-${socket.username}`, die);
   });
 
   socket.on(DICE__PUT_BACK, (die) => {
-    console.log(`${DICE__PUT_BACK}: ${socket.user.name} is putting back ${die.id}`);
-    console.log(`Broadcasting: ${DICE__PUT_BACK}-${socket.user.name}`);
-    socket.broadcast.emit(`${DICE__PUT_BACK}-${socket.user.name}`, die);
+    socket.broadcast.emit(`${DICE__PUT_BACK}-${socket.username}`, die);
   });
 
   socket.on(DICE__SET_DIE, (die, newValue) => {
-    console.log(`${DICE__SET_DIE}: ${socket.user.name} is setting ${die.id} to ${newValue}`);
-    console.log(`Broadcasting: ${DICE__SET_DIE}-${socket.user.name}`);
-    socket.broadcast.emit(`${DICE__SET_DIE}-${socket.user.name}`,
+    socket.broadcast.emit(`${DICE__SET_DIE}-${socket.username}`,
       die, newValue);
   });
 });

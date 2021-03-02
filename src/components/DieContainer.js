@@ -27,6 +27,8 @@ class DieContainer extends React.Component {
   }
 
   setDie = (newValue) => {
+    const { socket, die } = this.props;
+    socket.emit(DICE__SET_DIE, die, newValue);
   }
 
   render() {

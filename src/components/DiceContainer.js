@@ -1,7 +1,7 @@
 import React from 'react';
 import DieIcon from './DieIcon';
 import DieContainer from './DieContainer';
-import { DICE__DRAW_DIE, DICE__PUT_BACK, DICE__SET_DIE } from '../SocketEvents';
+import { DICE__DRAW_DIE } from '../SocketEvents';
 
 class DiceContainer extends React.Component {
 
@@ -33,16 +33,6 @@ class DiceContainer extends React.Component {
   */
 
 
-  /*
-  // Move die from diceInBag to diceOnTable.
-  takeDie = (die) => {
-    this.setState(prevState => ({
-      diceInBag: prevState.diceInBag.filter(d => d.id !== die.id),
-      diceOnTable: [...prevState.diceOnTable, die]
-    }));
-  }
-  */
-
   drawDie = () => {
     const diceInBag = this.props.dice.filter(d => !d.isOnTable);
     const rand = Math.floor(Math.random() * diceInBag.length);
@@ -51,20 +41,6 @@ class DiceContainer extends React.Component {
   }
 
   /*
-  // Move die from diceOnTable to diceInBag.
-  putBack = (die) => {
-    const newDie = {...die, value: null}
-    this.setState(prevState => ({
-      diceInBag: [...prevState.diceInBag, newDie],
-      diceOnTable: prevState.diceOnTable.filter(d => d.id !== newDie.id)
-    }));
-  }
-
-  putBackAndAnnounce = (die) => {
-    this.putBack(die);
-    this.props.socket.emit(DICE__PUT_BACK, die);
-  }
-
   // Sets the value of a die that is on the table. Note that all dice in the bag
   // have value null so they aren't considered.
   setDie = (die, newValue) => {

@@ -83,24 +83,19 @@ io.on('connection', (socket) => {
 
   socket.on(DICE__DRAW_DIE, (die) => {
     const dice = diceDict.get(socket.username);
-    const diceCopy = [];
-    dice.forEach((d) => {
-      if (d.id === die.id) {
-        diceCopy.push({ ...d, isOnTable: true });
-      } else {
-        diceCopy.push({ ...d });
-      }
-    });
+    const newDice = moveDie(dice, die, true);
+    diceDict.set(socket.username, newDice);
+    io.emit(UPDATE_DICE, socket.username, newDice);
+  });
 
-    diceDict.set(socket.username, diceCopy);
-    io.emit(UPDATE_DICE, socket.username, diceCopy);
+  socket.on(DICE__PUT_BACK, (die) => {
+    const dice = diceDict.get(socket.username);
+    const newDice = moveDie(dice, die, false);
+    diceDict.set(socket.username, newDice);
+    io.emit(UPDATE_DICE, socket.username, newDice);
   });
 
   /*
-  socket.on(DICE__PUT_BACK, (die) => {
-    socket.broadcast.emit(`${DICE__PUT_BACK}-${socket.username}`, die);
-  });
-
   socket.on(DICE__SET_DIE, (die, newValue) => {
     socket.broadcast.emit(`${DICE__SET_DIE}-${socket.username}`,
       die, newValue);
@@ -128,5 +123,14 @@ function startingDice(username) {
       dice.push(die);
     }
   });
+
   return dice;
+}
+
+// moveToTable argument is true if die should move from bag to table, false if
+// die should move from table to bag
+function moveDie(dice, die, moveToTable) {
+  return dice.map(
+    d => (d.id === die.id) ? { ...d, isOnTable: moveToTable } : { ...d }
+  );
 }

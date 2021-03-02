@@ -1,5 +1,6 @@
 import React from 'react';
 import DieIcon from './DieIcon';
+import { DICE__PUT_BACK, DICE__SET_DIE } from '../SocketEvents';
 
 class DieContainer extends React.Component {
   constructor(props) {
@@ -8,6 +9,8 @@ class DieContainer extends React.Component {
   }
 
   putBack = () => {
+    const { socket, die } = this.props;
+    socket.emit(DICE__PUT_BACK, die);
   }
 
   roll = () => {

@@ -13,14 +13,15 @@ server.listen(PORT, () => { console.log(`Connected to port ${PORT}`); });
 const {
   CHECK_USERNAME,
   USER_LOGGED_IN,
-  UPDATE_USERNAME_LIST,
   USER_RECONNECTED,
-  RESTORE_STATE,
-  UPDATE_DICE,
-  GAME_LOG_MESSAGE,
   DICE__DRAW_DIE,
   DICE__PUT_BACK,
   DICE__SET_DIE,
+
+  LOG_BACK_IN,
+  GAME_LOG_MESSAGE,
+  UPDATE_USERNAME_LIST,
+  UPDATE_DICE,
 } = require('./SocketEvents');
 
 let usernames = [];
@@ -69,8 +70,11 @@ io.on('connection', (socket) => {
       usernames = [...usernames, username];
       socket.username = username;
 
-      // Send entire game state (TO DO)
-      socket.emit(RESTORE_STATE, username);
+      // Send entire game state
+      socket.emit(LOG_BACK_IN, username);
+      diceDict.forEach((d, u) => {
+        socket.emit(UPDATE_DICE, u, d);
+      });
 
       io.emit(UPDATE_USERNAME_LIST, usernames);
       gameLog(`${username} reconnected.`);

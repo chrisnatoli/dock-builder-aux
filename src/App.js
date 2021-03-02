@@ -6,9 +6,9 @@ import GameLog from './components/GameLog';
 import DiceContainer from './components/DiceContainer';
 
 import {
-  USER_RECONNECTED,
   USER_LOGGED_IN,
-  RESTORE_STATE,
+  USER_RECONNECTED,
+  LOG_BACK_IN,
   UPDATE_USERNAME_LIST,
   UPDATE_DICE,
 } from './SocketEvents';
@@ -40,7 +40,7 @@ class App extends React.Component {
       }
     });
 
-    socket.on(RESTORE_STATE, username => this.setState({ username }));
+    socket.on(LOG_BACK_IN, username => this.setState({ username }));
 
     socket.on(UPDATE_USERNAME_LIST,
       usernameList => this.setState({ usernameList })

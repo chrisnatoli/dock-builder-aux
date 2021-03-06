@@ -5,8 +5,8 @@ const io = require('socket.io')(server, { cors: { origin: '*' } });
 const { initDice, drawDie, putBack, setDie } = require('./game_state/Dice');
 
 const PORT = process.env.PORT || 3030;
-//app.use(express.static(__dirname + '/../build')); // FOR BUILD
-app.use(express.static(__dirname + '/..'));        // FOR DEVELOPMENT
+app.use(express.static(__dirname + '/../build')); // FOR BUILD
+//app.use(express.static(__dirname + '/..'));        // FOR DEVELOPMENT
 server.listen(PORT, () => { console.log(`Connected to port ${PORT}`); });
 
 

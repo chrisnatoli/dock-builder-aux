@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server, { cors: { origin: '*' } });
+const { initDice, drawDie, putBack, setDie } = require('./game_state/Dice');
 
 const PORT = process.env.PORT || 3030;
 //app.use(express.static(__dirname + '/../build')); // FOR BUILD
@@ -43,8 +44,8 @@ io.on('connection', (socket) => {
     io.emit(UPDATE_USERNAME_LIST, usernames);
     gameLog(`${username} logged in.`);
 
-    const dice = startingDice(username)
-    diceDict.set(username, dice)
+    const dice = initDice(username)
+    diceDict = new Map([...diceDict, [username, dice]]);
 
     // Inform other users of new user
     socket.broadcast.emit(UPDATE_DICE, username, dice);
@@ -86,27 +87,27 @@ io.on('connection', (socket) => {
 
 
   socket.on(DICE__DRAW_DIE, (die) => {
-    const dice = diceDict.get(socket.username).map(d =>
-      (d.id === die.id) ? { ...d, isOnTable: true } : { ...d }
-    );
-    diceDict.set(socket.username, dice);
-    io.emit(UPDATE_DICE, socket.username, dice);
+    const username = socket.username;
+    const dice = diceDict.get(username);
+    const newDice = drawDie(dice, die);
+    diceDict = new Map([...diceDict, [username, newDice]]);
+    io.emit(UPDATE_DICE, username, newDice);
   });
 
   socket.on(DICE__PUT_BACK, (die) => {
-    const dice = diceDict.get(socket.username).map(d =>
-      (d.id === die.id) ? { ...d, isOnTable: false, value: null } : { ...d }
-    );
-    diceDict.set(socket.username, dice);
-    io.emit(UPDATE_DICE, socket.username, dice);
+    const username = socket.username;
+    const dice = diceDict.get(username);
+    const newDice = putBack(dice, die);
+    diceDict = new Map([...diceDict, [username, newDice]]);
+    io.emit(UPDATE_DICE, username, newDice);
   });
 
   socket.on(DICE__SET_DIE, (die, newValue) => {
-    const dice = diceDict.get(socket.username).map(d =>
-      (d.id === die.id) ? { ...d, value: newValue } : { ...d }
-    );
-    diceDict.set(socket.username, dice);
-    io.emit(UPDATE_DICE, socket.username, dice);
+    const username = socket.username;
+    const dice = diceDict.get(username);
+    const newDice = setDie(dice, die, newValue);
+    diceDict = new Map([...diceDict, [username, newDice]]);
+    io.emit(UPDATE_DICE, username, newDice);
   });
 
 
@@ -116,22 +117,4 @@ io.on('connection', (socket) => {
 
 function gameLog(message) {
   io.emit(GAME_LOG_MESSAGE, message);
-}
-
-function startingDice(username) {
-  const dice = [];
-  const numDicePerColor = 4;
-  ["green", "purple", "orange"].forEach((color) => {
-    for (let i=0; i < numDicePerColor; i++) {
-      const die = {
-        id: username + "_" + color + i,
-        color,
-        value: null,
-        isOnTable: false,
-      };
-      dice.push(die);
-    }
-  });
-
-  return dice;
 }

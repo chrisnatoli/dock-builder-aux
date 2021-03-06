@@ -48,9 +48,8 @@ class App extends React.Component {
 
     socket.on(UPDATE_DICE, (username, dice) => {
       this.setState((prevState) => {
-        const copy = new Map(prevState.diceDict);
-        copy.set(username, dice);
-        return { diceDict: copy };
+        const newDict = new Map([...prevState.diceDict, [username, dice]]);
+        return { diceDict: newDict };
       });
     });
   }

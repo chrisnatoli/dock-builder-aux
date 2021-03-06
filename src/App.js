@@ -13,6 +13,7 @@ import {
   UPDATE_USERNAME_LIST,
   UPDATE_DICE,
   UPDATE_HORIZON_DECK,
+  UPDATE_HORIZON_HAND,
 } from './SocketEvents';
 
 //const socketUrl = "/";                        // FOR BUILD
@@ -27,6 +28,7 @@ class App extends React.Component {
       usernameList: [],
       diceDict: new Map(),
       horizonDeck: { drawPile: [], discardPile: [] },
+      horizonHands: new Map()
     };
   }
 
@@ -59,6 +61,23 @@ class App extends React.Component {
     socket.on(UPDATE_HORIZON_DECK,
       horizonDeck => this.setState({ horizonDeck })
     );
+
+    socket.on(UPDATE_HORIZON_HAND, (username, hand) => {
+      this.setState((prevState) => {
+        const oldHands = prevState.horizonHands;
+        let newHands;
+
+        // Since an opponent's hand is private information, only record the size
+        // of an opponent's hand.
+        if (username === this.state.username) {
+          newHands = new Map([...oldHands, [username, hand]]);
+        } else {
+          newHands = new Map([...oldHands, [username, hand.length]]);
+        }
+
+        return { horizonHands: newHands };
+      });
+    });
   }
 
   setUsername = (username) => {
@@ -76,11 +95,12 @@ class App extends React.Component {
       usernameList,
       diceDict,
       horizonDeck,
+      horizonHands,
     } = this.state;
 
-    let otherUsernames;
+    let opponents;
     if (username) {
-      otherUsernames = usernameList.filter(u => u !== username);
+      opponents = usernameList.filter(u => u !== username);
     }
 
     return (
@@ -101,9 +121,9 @@ class App extends React.Component {
               isForThisUser={true}
               />
 
-            <div className="DiceContainersForOtherUsers">
+            <div className="DiceContainersForOpponents">
               {
-                otherUsernames.map((username) => (
+                opponents.map((username) => (
                   <DiceContainer
                     key={username}
                     socket={socket}
@@ -119,6 +139,7 @@ class App extends React.Component {
               socket={socket}
               username={username}
               deck={horizonDeck}
+              hands={horizonHands}
               />
 
             <GameLog socket={socket} />

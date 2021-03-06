@@ -22,7 +22,7 @@ div.container {
   padding: 10px;
 }
 
-div.DiceContainersForOtherUsers div.DiceContainer div.DieContainer {
+div.DiceContainersForOpponents div.DiceContainer {
   display: inline-block;
 }
 
@@ -31,6 +31,9 @@ div.DiceOnTableContainer {
   margin-top: 24px;
 }
 
+div.DieContainer {
+  display: inline-block;
+}
 
 div.DieContainer button {
   display: block;

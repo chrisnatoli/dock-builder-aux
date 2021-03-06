@@ -2,7 +2,8 @@ import React from 'react';
 
 class HorizonDeckContainer extends React.Component {
   render() {
-    const { deck } = this.props;
+    const { username, deck, hands } = this.props;
+
     return (
       <div className="HorizonDeckContainer container">
         <p>Draw pile:</p>
@@ -16,7 +17,22 @@ class HorizonDeckContainer extends React.Component {
         <p>
           {deck.discardPile.map(card => card.id).join(", ")}
         </p>
-        </div>
+
+        <br/>
+
+        {
+          [...hands].map(([u, hand]) => (
+            <p key={u}>
+              {`${u}'s cards: `}
+              {
+                (u === username)
+                ? hand.map(card => card.id).join(", ")
+                : hand
+              }
+            </p>
+          ))
+        }
+      </div>
       );
   }
 }

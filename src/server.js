@@ -25,12 +25,14 @@ const {
   UPDATE_USERNAME_LIST,
   UPDATE_DICE,
   UPDATE_HORIZON_DECK,
+  UPDATE_HORIZON_HAND,
 } = require('./SocketEvents');
 
 let usernames = [];
 let disconnectedUsers = [];
 let diceDict = new Map();  // username => dice array
 let horizonDeck = initHorizonDeck();
+let horizonHands = new Map(); // username => card array
 
 io.on('connection', (socket) => {
   console.log(`New socket connected (socket ID: ${socket.id})`);
@@ -49,9 +51,12 @@ io.on('connection', (socket) => {
 
     const dice = initDice(username)
     diceDict = new Map([...diceDict, [username, dice]]);
+    const emptyHand = []
+    horizonHands = new Map([...horizonHands, [username, emptyHand]]);
 
     // Inform other users of new user and inform new user of entire game state
     socket.broadcast.emit(UPDATE_DICE, username, dice);
+    socket.broadcast.emit(UPDATE_HORIZON_HAND, username, emptyHand);
     sendGameState(socket);
   });
 
@@ -122,4 +127,8 @@ function sendGameState(socket) {
   });
 
   socket.emit(UPDATE_HORIZON_DECK, horizonDeck);
+
+  horizonHands.forEach((hand, username) => {
+    socket.emit(UPDATE_HORIZON_HAND, username, hand);
+  });
 }

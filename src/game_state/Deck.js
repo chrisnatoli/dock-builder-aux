@@ -8,4 +8,12 @@ const initHorizonDeck = () => {
   return { drawPile, discardPile };
 }
 
-module.exports = { initHorizonDeck };
+const drawCard = (drawPile, hand) => {
+  const topCard = drawPile[drawPile.length - 1];
+  return {
+    newDrawPile: drawPile.slice(0,-1),
+    newHand: [...hand, topCard]
+  };
+}
+
+module.exports = { initHorizonDeck, drawCard };

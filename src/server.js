@@ -3,7 +3,7 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server, { cors: { origin: '*' } });
 const { initDice, drawDie, putBack, setDie } = require('./game_state/Dice');
-const { initHorizonDeck } = require('./game_state/Deck');
+const { initHorizonDeck, drawCard } = require('./game_state/Deck');
 
 const PORT = process.env.PORT || 3030;
 //app.use(express.static(__dirname + '/../build')); // FOR BUILD
@@ -19,6 +19,7 @@ const {
   DICE__DRAW_DIE,
   DICE__PUT_BACK,
   DICE__SET_DIE,
+  HORIZON__DRAW_CARD,
 
   LOG_BACK_IN,
   GAME_LOG_MESSAGE,
@@ -27,6 +28,7 @@ const {
   UPDATE_HORIZON_DECK,
   UPDATE_HORIZON_HAND,
 } = require('./SocketEvents');
+
 
 let usernames = [];
 let disconnectedUsers = [];
@@ -113,6 +115,17 @@ io.on('connection', (socket) => {
   });
 
 
+
+  socket.on(HORIZON__DRAW_CARD, () => {
+    const username = socket.username;
+    const hand = horizonHands.get(username);
+    const drawPile = horizonDeck.drawPile;
+    const { newDrawPile, newHand } = drawCard(drawPile, hand);
+    horizonDeck = { ...horizonDeck, drawPile: newDrawPile };
+    horizonHands = new Map([...horizonHands, [username, newHand]]);
+    io.emit(UPDATE_HORIZON_DECK, horizonDeck);
+    io.emit(UPDATE_HORIZON_HAND, username, newHand);
+  });
 });
 
 

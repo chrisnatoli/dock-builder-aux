@@ -3,6 +3,7 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server, { cors: { origin: '*' } });
 const { initDice, drawDie, putBack, setDie } = require('./game_state/Dice');
+const { initHorizonDeck } = require('./game_state/Deck');
 
 const PORT = process.env.PORT || 3030;
 //app.use(express.static(__dirname + '/../build')); // FOR BUILD
@@ -23,11 +24,13 @@ const {
   GAME_LOG_MESSAGE,
   UPDATE_USERNAME_LIST,
   UPDATE_DICE,
+  UPDATE_HORIZON_DECK,
 } = require('./SocketEvents');
 
 let usernames = [];
 let disconnectedUsers = [];
 let diceDict = new Map();  // username => dice array
+let horizonDeck = initHorizonDeck();
 
 io.on('connection', (socket) => {
   console.log(`New socket connected (socket ID: ${socket.id})`);
@@ -47,13 +50,9 @@ io.on('connection', (socket) => {
     const dice = initDice(username)
     diceDict = new Map([...diceDict, [username, dice]]);
 
-    // Inform other users of new user
+    // Inform other users of new user and inform new user of entire game state
     socket.broadcast.emit(UPDATE_DICE, username, dice);
-
-    // Inform new user of entire game state
-    diceDict.forEach((d, u) => {
-      socket.emit(UPDATE_DICE, u, d);
-    });
+    sendGameState(socket);
   });
 
   socket.on('disconnect', () => {
@@ -73,9 +72,7 @@ io.on('connection', (socket) => {
 
       // Send entire game state
       socket.emit(LOG_BACK_IN, username);
-      diceDict.forEach((d, u) => {
-        socket.emit(UPDATE_DICE, u, d);
-      });
+      sendGameState(socket);
 
       io.emit(UPDATE_USERNAME_LIST, usernames);
       gameLog(`${username} reconnected.`);
@@ -117,4 +114,12 @@ io.on('connection', (socket) => {
 
 function gameLog(message) {
   io.emit(GAME_LOG_MESSAGE, message);
+}
+
+function sendGameState(socket) {
+  diceDict.forEach((dice, username) => {
+    socket.emit(UPDATE_DICE, username, dice);
+  });
+
+  socket.emit(UPDATE_HORIZON_DECK, horizonDeck);
 }

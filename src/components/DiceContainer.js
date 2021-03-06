@@ -4,7 +4,7 @@ import DieContainer from './DieContainer';
 import { DICE__DRAW_DIE } from '../SocketEvents';
 
 class DiceContainer extends React.Component {
-  
+
   drawDie = () => {
     const diceInBag = this.props.dice.filter(d => !d.isOnTable);
     const rand = Math.floor(Math.random() * diceInBag.length);
@@ -37,7 +37,7 @@ class DiceContainer extends React.Component {
 
 
     return (
-      <div className="DiceContainer">
+      <div className="DiceContainer container">
         <h3>{`${username}'s dice`}</h3>
 
         <div className="DiceInBagContainer">

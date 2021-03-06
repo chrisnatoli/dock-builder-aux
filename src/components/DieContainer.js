@@ -34,7 +34,7 @@ class DieContainer extends React.Component {
   render() {
     const { die } = this.props;
     return (
-      <div className="DieContainer">
+      <div className="DieContainer container">
         <DieIcon die={die} />
 
         <button onClick={this.putBack}>Put back</button>

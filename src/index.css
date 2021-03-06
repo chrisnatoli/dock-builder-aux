@@ -14,7 +14,7 @@ h3 {
 }
 
 
-div.DiceContainer {
+div.container {
   border-width: 1px;
   border-style: solid;
   border-color: gray;
@@ -22,25 +22,15 @@ div.DiceContainer {
   padding: 10px;
 }
 
-div.DiceContainersForOtherUsers div.DiceContainer {
+div.DiceContainersForOtherUsers div.DiceContainer div.DieContainer {
   display: inline-block;
 }
 
-div.DiceInBagContainer {
-}
 
 div.DiceOnTableContainer {
   margin-top: 24px;
 }
 
-div.DieContainer {
-  display: inline-block;
-  border-width: 1px;
-  border-style: solid;
-  border-color: gray;
-  padding: 10px;
-  margin: 5px;
-}
 
 div.DieContainer button {
   display: block;
@@ -57,11 +47,6 @@ span.DieIcon {
 
 div.GameLog {
   display: inline-block;
-  border-width: 1px;
-  border-style: solid;
-  border-color: gray;
-  margin: 10px;
-  padding: 10px;
 }
 
 div.LogMessageContainer {

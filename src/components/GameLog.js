@@ -29,7 +29,7 @@ class GameLog extends React.Component {
 
   render() {
     return (
-      <div className="GameLog">
+      <div className="GameLog container">
         <h3>Game Log</h3>
         <div className="LogMessageContainer" ref={this.container}>
           {

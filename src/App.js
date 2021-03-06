@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import LoginForm from './components/LoginForm';
 import GameLog from './components/GameLog';
 import DiceContainer from './components/DiceContainer';
+import HorizonDeckContainer from './components/HorizonDeckContainer';
 
 import {
   USER_LOGGED_IN,
@@ -11,6 +12,7 @@ import {
   LOG_BACK_IN,
   UPDATE_USERNAME_LIST,
   UPDATE_DICE,
+  UPDATE_HORIZON_DECK,
 } from './SocketEvents';
 
 //const socketUrl = "/";                        // FOR BUILD
@@ -24,6 +26,7 @@ class App extends React.Component {
       username: null,
       usernameList: [],
       diceDict: new Map(),
+      horizonDeck: { drawPile: [], discardPile: [] },
     };
   }
 
@@ -52,6 +55,10 @@ class App extends React.Component {
         return { diceDict: newDict };
       });
     });
+
+    socket.on(UPDATE_HORIZON_DECK,
+      horizonDeck => this.setState({ horizonDeck })
+    );
   }
 
   setUsername = (username) => {
@@ -64,7 +71,13 @@ class App extends React.Component {
   }
 
   render() {
-    const { socket, username, usernameList, diceDict } = this.state;
+    const { socket,
+      username,
+      usernameList,
+      diceDict,
+      horizonDeck,
+    } = this.state;
+
     let otherUsernames;
     if (username) {
       otherUsernames = usernameList.filter(u => u !== username);
@@ -101,6 +114,12 @@ class App extends React.Component {
                 ))
               }
             </div>
+
+            <HorizonDeckContainer
+              socket={socket}
+              username={username}
+              deck={horizonDeck}
+              />
 
             <GameLog socket={socket} />
             <br />

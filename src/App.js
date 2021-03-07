@@ -11,7 +11,6 @@ import {
   USER_RECONNECTED,
   LOG_BACK_IN,
   UPDATE_USERNAME_LIST,
-  UPDATE_DICE,
   UPDATE_HORIZON_DECK,
   UPDATE_HORIZON_HAND,
 } from './SocketEvents';
@@ -26,7 +25,6 @@ class App extends React.Component {
       socket: null,
       username: null,
       usernameList: [],
-      diceDict: new Map(),
       horizonDeck: { drawPile: [], discardPile: [] },
       horizonHands: new Map()
     };
@@ -50,13 +48,6 @@ class App extends React.Component {
     socket.on(UPDATE_USERNAME_LIST,
       usernameList => this.setState({ usernameList })
     );
-
-    socket.on(UPDATE_DICE, (username, dice) => {
-      this.setState((prevState) => {
-        const newDict = new Map([...prevState.diceDict, [username, dice]]);
-        return { diceDict: newDict };
-      });
-    });
 
     socket.on(UPDATE_HORIZON_DECK,
       horizonDeck => this.setState({ horizonDeck })
@@ -93,7 +84,6 @@ class App extends React.Component {
     const { socket,
       username,
       usernameList,
-      diceDict,
       horizonDeck,
       horizonHands,
     } = this.state;
@@ -117,7 +107,6 @@ class App extends React.Component {
             <DiceContainer
               socket={socket}
               username={username}
-              dice={diceDict.get(username)}
               isForThisUser={true}
               />
 
@@ -128,7 +117,6 @@ class App extends React.Component {
                     key={username}
                     socket={socket}
                     username={username}
-                    dice={diceDict.get(username)}
                     isForThisUser={false}
                     />
                 ))

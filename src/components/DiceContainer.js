@@ -1,19 +1,36 @@
 import React from 'react';
 import DieIcon from './DieIcon';
 import DieContainer from './DieContainer';
-import { DICE__DRAW_DIE } from '../SocketEvents';
+import { DICE__DRAW_DIE, UPDATE_DICE } from '../SocketEvents';
 
 class DiceContainer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      dice: [],
+    }
+  }
+
+  componentDidMount() {
+    const socket = this.props.socket;
+
+    socket.on(UPDATE_DICE, (username, dice) => {
+      if (this.props.username === username) {
+        this.setState({ dice });
+      }
+    });
+  }
 
   drawDie = () => {
-    const diceInBag = this.props.dice.filter(d => !d.isOnTable);
+    const diceInBag = this.state.dice.filter(d => !d.isOnTable);
     const rand = Math.floor(Math.random() * diceInBag.length);
     const die = diceInBag[rand];
     this.props.socket.emit(DICE__DRAW_DIE, die);
   }
 
   render() {
-    const { socket, username, dice, isForThisUser } = this.props;
+    const { socket, username, isForThisUser } = this.props;
+    const { dice } = this.state;
     let diceInBag = [], diceOnTable = [];
     if (dice) {
       diceInBag = dice.filter(d => !d.isOnTable);

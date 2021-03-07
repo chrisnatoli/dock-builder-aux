@@ -26,7 +26,6 @@ div.DiceContainersForOpponents div.DiceContainer {
   display: inline-block;
 }
 
-
 div.DiceOnTableContainer {
   margin-top: 24px;
 }
@@ -34,11 +33,9 @@ div.DiceOnTableContainer {
 div.DieContainer {
   display: inline-block;
 }
-
 div.DieContainer button {
   display: block;
 }
-
 div.DieContainer label {
   display: block;
   margin-top: 10px;
@@ -59,4 +56,23 @@ div.LogMessageContainer {
 }
 
 div.LogMessage {
+}
+
+div.HorizonDeckContainer button {
+  display: block;
+}
+
+div.HorizonCard {
+  display: inline-block;
+  width: 60px;
+  height: 90px;
+  background-color: Gainsboro;
+  border-radius: 5px;
+  margin: 5px;
+}
+div.HorizonCard div.InsideCard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }

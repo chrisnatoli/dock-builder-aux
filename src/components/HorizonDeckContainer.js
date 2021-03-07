@@ -1,4 +1,5 @@
 import React from 'react';
+import HorizonCard from './HorizonCard';
 import { HORIZON__DRAW_CARD } from '../SocketEvents';
 
 class HorizonDeckContainer extends React.Component {
@@ -12,7 +13,9 @@ class HorizonDeckContainer extends React.Component {
     return (
       <div className="HorizonDeckContainer container">
         <p>Draw pile:</p>
-        <p>{deck.drawPile.map(card => card.id).join(", ")}</p>
+        {deck.drawPile.map(card => (
+          <HorizonCard card={card} key={card.id} />
+        ))}
 
         <button
           onClick={this.handleClick}
@@ -24,20 +27,22 @@ class HorizonDeckContainer extends React.Component {
         <br/>
 
         <p>Discard pile:</p>
-        <p>{deck.discardPile.map(card => card.id).join(", ")}</p>
+        {deck.discardPile.map(card => (
+          <HorizonCard card={card} key={card.id} />
+        ))}
 
         <br/>
 
         {
           [...hands].map(([u, hand]) => (
-            <p key={u}>
+            <div class="HorizonHand" key={u}>
               {`${u}'s cards: `}
               {
                 (u === username)
-                ? hand.map(card => card.id).join(", ")
+                ? hand.map(card => <HorizonCard card={card} key={card.id} />)
                 : hand
               }
-            </p>
+            </div>
           ))
         }
       </div>

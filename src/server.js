@@ -33,7 +33,7 @@ const {
 let usernames = [];
 let disconnectedUsers = [];
 let diceDict = new Map();  // username => dice array
-let horizonDeck = initHorizonDeck();
+let horizonDeck = initHorizonDeck(); // { drawPile, discardPile }
 let horizonHands = new Map(); // username => card array
 
 io.on('connection', (socket) => {
@@ -135,6 +135,7 @@ function gameLog(message) {
 }
 
 function sendGameState(socket) {
+  console.log("Sending game state");
   diceDict.forEach((dice, username) => {
     socket.emit(UPDATE_DICE, username, dice);
   });

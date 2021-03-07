@@ -1,25 +1,65 @@
 import React from 'react';
 import HorizonCard from './HorizonCard';
-import { HORIZON__DRAW_CARD } from '../SocketEvents';
+import {
+  HORIZON__DRAW_CARD,
+  UPDATE_HORIZON_DECK,
+  UPDATE_HORIZON_HAND,
+} from '../SocketEvents';
+
 
 class HorizonDeckContainer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      drawPile: [],
+      discardPile: [],
+      hands: new Map()
+    };
+  }
+
+  componentDidMount() {
+    const socket = this.props.socket;
+
+    socket.on(UPDATE_HORIZON_DECK,
+       ({ drawPile, discardPile }) => this.setState({ drawPile, discardPile })
+    );
+
+    socket.on(UPDATE_HORIZON_HAND, (username, hand) => {
+      this.setState((prevState) => {
+        const oldHands = prevState.hands;
+        let newHands;
+
+        if (username === this.props.username) {
+          newHands = new Map([...oldHands, [username, hand]]);
+        } else {
+          // Since an opponent's hand is private information, only remember the
+          // size of an opponent's hand.
+          newHands = new Map([...oldHands, [username, hand.length]]);
+        }
+
+        return { hands: newHands };
+      });
+    });
+  }
+
   handleClick = () => {
     this.props.socket.emit(HORIZON__DRAW_CARD);
   }
 
   render() {
-    const { username, deck, hands } = this.props;
+    const { username } = this.props;
+    const { drawPile, discardPile, hands } = this.state;
 
     return (
       <div className="HorizonDeckContainer container">
         <p>Draw pile:</p>
-        {deck.drawPile.map(card => (
+        {drawPile.map(card => (
           <HorizonCard card={card} key={card.id} />
         ))}
 
         <button
           onClick={this.handleClick}
-          disabled={deck.drawPile.length===0}
+          disabled={drawPile.length===0}
           >
           Draw
         </button>
@@ -27,7 +67,7 @@ class HorizonDeckContainer extends React.Component {
         <br/>
 
         <p>Discard pile:</p>
-        {deck.discardPile.map(card => (
+        {discardPile.map(card => (
           <HorizonCard card={card} key={card.id} />
         ))}
 
@@ -35,7 +75,7 @@ class HorizonDeckContainer extends React.Component {
 
         {
           [...hands].map(([u, hand]) => (
-            <div class="HorizonHand" key={u}>
+            <div className="HorizonHand" key={u}>
               {`${u}'s cards: `}
               {
                 (u === username)

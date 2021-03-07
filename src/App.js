@@ -11,8 +11,6 @@ import {
   USER_RECONNECTED,
   LOG_BACK_IN,
   UPDATE_USERNAME_LIST,
-  UPDATE_HORIZON_DECK,
-  UPDATE_HORIZON_HAND,
 } from './SocketEvents';
 
 //const socketUrl = "/";                        // FOR BUILD
@@ -25,8 +23,6 @@ class App extends React.Component {
       socket: null,
       username: null,
       usernameList: [],
-      horizonDeck: { drawPile: [], discardPile: [] },
-      horizonHands: new Map()
     };
   }
 
@@ -48,27 +44,6 @@ class App extends React.Component {
     socket.on(UPDATE_USERNAME_LIST,
       usernameList => this.setState({ usernameList })
     );
-
-    socket.on(UPDATE_HORIZON_DECK,
-      horizonDeck => this.setState({ horizonDeck })
-    );
-
-    socket.on(UPDATE_HORIZON_HAND, (username, hand) => {
-      this.setState((prevState) => {
-        const oldHands = prevState.horizonHands;
-        let newHands;
-
-        // Since an opponent's hand is private information, only record the size
-        // of an opponent's hand.
-        if (username === this.state.username) {
-          newHands = new Map([...oldHands, [username, hand]]);
-        } else {
-          newHands = new Map([...oldHands, [username, hand.length]]);
-        }
-
-        return { horizonHands: newHands };
-      });
-    });
   }
 
   setUsername = (username) => {
@@ -81,12 +56,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { socket,
-      username,
-      usernameList,
-      horizonDeck,
-      horizonHands,
-    } = this.state;
+    const { socket, username, usernameList } = this.state;
 
     let opponents;
     if (username) {
@@ -123,12 +93,7 @@ class App extends React.Component {
               }
             </div>
 
-            <HorizonDeckContainer
-              socket={socket}
-              username={username}
-              deck={horizonDeck}
-              hands={horizonHands}
-              />
+            <HorizonDeckContainer socket={socket} username={username} />
 
             <GameLog socket={socket} />
             <br />

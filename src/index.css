@@ -59,7 +59,7 @@ div.LogMessage {
 }
 
 div.HorizonDeckContainer button {
-  display: block;
+  display: inline-block;
 }
 
 div.HorizonCard {

@@ -3,7 +3,7 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server, { cors: { origin: '*' } });
 const { initDice, drawDie, putBack, setDie } = require('./game_state/Dice');
-const { initHorizonDeck, drawCard } = require('./game_state/Deck');
+const { initHorizonDeck, drawCard, dealCards } = require('./game_state/Deck');
 
 const PORT = process.env.PORT || 3030;
 //app.use(express.static(__dirname + '/../build')); // FOR BUILD
@@ -20,6 +20,7 @@ const {
   DICE__PUT_BACK,
   DICE__SET_DIE,
   HORIZON__DRAW_CARD,
+  HORIZON__DEAL_CARDS,
 
   LOG_BACK_IN,
   GAME_LOG_MESSAGE,
@@ -125,6 +126,19 @@ io.on('connection', (socket) => {
     io.emit(UPDATE_HORIZON_DECK, horizonDrawPile, horizonDiscardPile);
     io.emit(UPDATE_HORIZON_HAND, username, newHand);
   });
+
+  socket.on(HORIZON__DEAL_CARDS, () => {
+    ({
+      newDrawPile: horizonDrawPile,
+      newDiscardPile: horizonDiscardPile,
+      newHands: horizonHands
+    } = dealCards(horizonDrawPile, horizonDiscardPile, horizonHands));
+    io.emit(UPDATE_HORIZON_DECK, horizonDrawPile, horizonDiscardPile);
+    horizonHands.forEach((hand, username) => {
+      io.emit(UPDATE_HORIZON_HAND, username, hand);
+    });
+  });
+
 });
 
 

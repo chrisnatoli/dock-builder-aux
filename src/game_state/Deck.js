@@ -1,25 +1,31 @@
 const initHorizonDeck = () => {
-  const nums = [...Array(15).keys()];
+  let nums = [...Array(15).keys()].map(i => i+1);
   let horizonDrawPile = nums.map(i => (Object.freeze({
     id: "card"+i,
     num: i,
   })));
   horizonDrawPile = shuffle(horizonDrawPile);
-  const horizonDiscardPile = [];
+
+  nums = nums.map(i => i+15);
+  const horizonDiscardPile = nums.map(i => (Object.freeze({
+    id: "card"+i,
+    num: i,
+  })));
+
   return { horizonDrawPile, horizonDiscardPile };
 }
 
-const shuffle = (deck) => {
-  let newDeck = [...deck];
-  let n = deck.length;
+const shuffle = (cards) => {
+  let newCards = [...cards];
+  let n = cards.length;
 
   while (n) {
     const i = Math.floor(Math.random() * n);
     n--;
-    [newDeck[i], newDeck[n]] = [newDeck[n], newDeck[i]];
+    [newCards[i], newCards[n]] = [newCards[n], newCards[i]];
   }
 
-  return newDeck;
+  return newCards;
 }
 
 const drawCard = (drawPile, hand) => {
@@ -30,4 +36,28 @@ const drawCard = (drawPile, hand) => {
   };
 }
 
-module.exports = { initHorizonDeck, drawCard };
+const dealCards = (drawPile, discardPile, hands) => {
+  let newDrawPile = [...drawPile];
+  let newDiscardPile = [...discardPile];
+
+  // Check if there are enough cards in the drawPile. If not, shuffle the
+  // discardPile and add it to the bottom.
+  const numToDeal = 3;
+  const numCardsNeeded = numToDeal * hands.size;
+  if (drawPile.length < numCardsNeeded) {
+    newDrawPile = [...shuffle(newDiscardPile), ...newDrawPile];
+    newDiscardPile = [];
+  }
+
+  let newHands = new Map();
+  hands.forEach((hand, username) => {
+    const newCards = newDrawPile.slice(-numToDeal);
+    newDrawPile = newDrawPile.slice(0, -numToDeal);
+    const newHand = [...hand, ...newCards];
+    newHands = new Map([...newHands, [username, newHand]]);
+  });
+
+  return { newDrawPile, newDiscardPile, newHands };
+}
+
+module.exports = { initHorizonDeck, drawCard, dealCards };

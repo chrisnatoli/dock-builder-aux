@@ -7,6 +7,7 @@ module.exports = {
   DICE__PUT_BACK:       "DICE__PUT_BACK",
   DICE__SET_DIE:        "DICE__SET_DIE",
   HORIZON__DRAW_CARD:   "HORIZON__DRAW_CARD",
+  HORIZON__DEAL_CARDS:  "HORIZON__DEAL_CARDS",
 
   // TO CLIENT
   LOG_BACK_IN:          "LOG_BACK_IN",

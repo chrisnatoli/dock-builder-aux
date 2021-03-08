@@ -2,6 +2,7 @@ import React from 'react';
 import HorizonCard from './HorizonCard';
 import {
   HORIZON__DRAW_CARD,
+  HORIZON__DEAL_CARDS,
   UPDATE_HORIZON_DECK,
   UPDATE_HORIZON_HAND,
 } from '../SocketEvents';
@@ -42,8 +43,12 @@ class HorizonDeckContainer extends React.Component {
     });
   }
 
-  handleClick = () => {
+  drawCard = () => {
     this.props.socket.emit(HORIZON__DRAW_CARD);
+  }
+
+  dealCards = () => {
+    this.props.socket.emit(HORIZON__DEAL_CARDS);
   }
 
   render() {
@@ -57,11 +62,20 @@ class HorizonDeckContainer extends React.Component {
           <HorizonCard card={card} key={card.id} />
         ))}
 
+        <br/>
+
         <button
-          onClick={this.handleClick}
+          onClick={this.drawCard}
           disabled={drawPile.length===0}
           >
           Draw
+        </button>
+        
+        <button
+          onClick={this.dealCards}
+          disabled={drawPile.length===0}
+          >
+          Deal
         </button>
 
         <br/>

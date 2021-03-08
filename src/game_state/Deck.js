@@ -28,45 +28,40 @@ const shuffle = (cards) => {
   return newCards;
 }
 
-const drawCard = (drawPile, discardPile, hand) => {
-  const topCard = drawPile[drawPile.length - 1];
-  let newDrawPile = drawPile.slice(0,-1);
-
-  let newDiscardPile = [...discardPile]
-  if (newDrawPile.length === 0) {
-    newDrawPile = shuffle(newDiscardPile);
-    newDiscardPile = [];
-  }
-
-  return {
-    newDrawPile,
-    newDiscardPile,
-    newHand: [...hand, topCard]
-  };
-}
-
-const dealCards = (drawPile, discardPile, hands) => {
+const drawCards = (drawPile, discardPile, hand, numCards) => {
   let newDrawPile = [...drawPile];
   let newDiscardPile = [...discardPile];
-
-  // Check if there are enough cards in the drawPile. If not, shuffle the
-  // discardPile and add it to the bottom.
-  const numToDeal = 3;
-  const numCardsNeeded = numToDeal * hands.size;
-  if (drawPile.length < numCardsNeeded) {
+  if (newDrawPile.length <= numCards) {
     newDrawPile = [...shuffle(newDiscardPile), ...newDrawPile];
     newDiscardPile = [];
   }
 
+  const topCards = newDrawPile.slice(-numCards);
+  newDrawPile = newDrawPile.slice(0, -numCards);
+
+  return {
+    newDrawPile,
+    newDiscardPile,
+    newHand: [...hand, ...topCards]
+  };
+}
+
+const dealCards = (drawPile, discardPile, hands, numToDeal) => {
+  let newDrawPile = [...drawPile];
+  let newDiscardPile = [...discardPile];
   let newHands = new Map();
+
   hands.forEach((hand, username) => {
-    const newCards = newDrawPile.slice(-numToDeal);
-    newDrawPile = newDrawPile.slice(0, -numToDeal);
-    const newHand = [...hand, ...newCards];
+    let newHand = [...hand];
+    ({
+      newDrawPile,
+      newDiscardPile,
+      newHand
+    } = drawCards(newDrawPile, newDiscardPile, newHand, numToDeal));
     newHands = new Map([...newHands, [username, newHand]]);
   });
 
   return { newDrawPile, newDiscardPile, newHands };
 }
 
-module.exports = { initHorizonDeck, drawCard, dealCards };
+module.exports = { initHorizonDeck, drawCards, dealCards };

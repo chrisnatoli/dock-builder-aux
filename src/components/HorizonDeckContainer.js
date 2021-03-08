@@ -16,6 +16,7 @@ class HorizonDeckContainer extends React.Component {
       discardPile: [],
       hands: new Map()
     };
+    this.numToDeal = 3;
   }
 
   componentDidMount() {
@@ -48,12 +49,13 @@ class HorizonDeckContainer extends React.Component {
   }
 
   dealCards = () => {
-    this.props.socket.emit(HORIZON__DEAL_CARDS);
+    this.props.socket.emit(HORIZON__DEAL_CARDS, this.numToDeal);
   }
 
   render() {
     const { username } = this.props;
     const { drawPile, discardPile, hands } = this.state;
+    const numCardsToDeal = this.numToDeal * hands.size;
 
     return (
       <div className="HorizonDeckContainer container">
@@ -73,7 +75,7 @@ class HorizonDeckContainer extends React.Component {
 
         <button
           onClick={this.dealCards}
-          disabled={drawPile.length===0}
+          disabled={drawPile.length + discardPile.length < numCardsToDeal}
           >
           Deal
         </button>

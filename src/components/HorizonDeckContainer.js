@@ -66,11 +66,11 @@ class HorizonDeckContainer extends React.Component {
 
         <button
           onClick={this.drawCard}
-          disabled={drawPile.length===0}
+          disabled={drawPile.length === 0}
           >
           Draw
         </button>
-        
+
         <button
           onClick={this.dealCards}
           disabled={drawPile.length===0}

@@ -28,10 +28,19 @@ const shuffle = (cards) => {
   return newCards;
 }
 
-const drawCard = (drawPile, hand) => {
+const drawCard = (drawPile, discardPile, hand) => {
   const topCard = drawPile[drawPile.length - 1];
+  let newDrawPile = drawPile.slice(0,-1);
+
+  let newDiscardPile = [...discardPile]
+  if (newDrawPile.length === 0) {
+    newDrawPile = shuffle(newDiscardPile);
+    newDiscardPile = [];
+  }
+
   return {
-    newDrawPile: drawPile.slice(0,-1),
+    newDrawPile,
+    newDiscardPile,
     newHand: [...hand, topCard]
   };
 }

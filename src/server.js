@@ -120,9 +120,15 @@ io.on('connection', (socket) => {
   socket.on(HORIZON__DRAW_CARD, () => {
     const username = socket.username;
     const hand = horizonHands.get(username);
-    const { newDrawPile, newHand } = drawCard(horizonDrawPile, hand);
-    horizonDrawPile = newDrawPile;
+
+    let newHand;
+    ({
+      newDrawPile: horizonDrawPile,
+      newDiscardPile: horizonDiscardPile,
+      newHand: newHand
+    } = drawCard(horizonDrawPile, horizonDiscardPile, hand));
     horizonHands = new Map([...horizonHands, [username, newHand]]);
+
     io.emit(UPDATE_HORIZON_DECK, horizonDrawPile, horizonDiscardPile);
     io.emit(UPDATE_HORIZON_HAND, username, newHand);
   });
@@ -133,6 +139,7 @@ io.on('connection', (socket) => {
       newDiscardPile: horizonDiscardPile,
       newHands: horizonHands
     } = dealCards(horizonDrawPile, horizonDiscardPile, horizonHands));
+
     io.emit(UPDATE_HORIZON_DECK, horizonDrawPile, horizonDiscardPile);
     horizonHands.forEach((hand, username) => {
       io.emit(UPDATE_HORIZON_HAND, username, hand);

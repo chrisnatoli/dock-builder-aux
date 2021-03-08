@@ -33,7 +33,7 @@ const {
 let usernames = [];
 let disconnectedUsers = [];
 let diceDict = new Map();  // username => dice array
-let horizonDeck = initHorizonDeck(); // { drawPile, discardPile }
+let { horizonDrawPile, horizonDiscardPile } = initHorizonDeck();
 let horizonHands = new Map(); // username => card array
 
 io.on('connection', (socket) => {
@@ -119,11 +119,10 @@ io.on('connection', (socket) => {
   socket.on(HORIZON__DRAW_CARD, () => {
     const username = socket.username;
     const hand = horizonHands.get(username);
-    const drawPile = horizonDeck.drawPile;
-    const { newDrawPile, newHand } = drawCard(drawPile, hand);
-    horizonDeck = { ...horizonDeck, drawPile: newDrawPile };
+    const { newDrawPile, newHand } = drawCard(horizonDrawPile, hand);
+    horizonDrawPile = newDrawPile;
     horizonHands = new Map([...horizonHands, [username, newHand]]);
-    io.emit(UPDATE_HORIZON_DECK, horizonDeck);
+    io.emit(UPDATE_HORIZON_DECK, horizonDrawPile, horizonDiscardPile);
     io.emit(UPDATE_HORIZON_HAND, username, newHand);
   });
 });
@@ -135,12 +134,11 @@ function gameLog(message) {
 }
 
 function sendGameState(socket) {
-  console.log("Sending game state");
   diceDict.forEach((dice, username) => {
     socket.emit(UPDATE_DICE, username, dice);
   });
 
-  socket.emit(UPDATE_HORIZON_DECK, horizonDeck);
+  socket.emit(UPDATE_HORIZON_DECK, horizonDrawPile, horizonDiscardPile);
 
   horizonHands.forEach((hand, username) => {
     socket.emit(UPDATE_HORIZON_HAND, username, hand);

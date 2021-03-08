@@ -21,7 +21,7 @@ class HorizonDeckContainer extends React.Component {
     const socket = this.props.socket;
 
     socket.on(UPDATE_HORIZON_DECK,
-       ({ drawPile, discardPile }) => this.setState({ drawPile, discardPile })
+       (drawPile, discardPile) => this.setState({ drawPile, discardPile })
     );
 
     socket.on(UPDATE_HORIZON_HAND, (username, hand) => {

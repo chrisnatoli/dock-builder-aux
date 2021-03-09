@@ -157,23 +157,30 @@ io.on('connection', (socket) => {
     horizonHands.forEach((hand, username) => {
       io.emit(UPDATE_HORIZON_HAND, username, hand);
     });
+    gameLog(`${numToDeal} Horizon cards were dealt to every player.`);
+    gameLog("First round of drafting.");
   });
 
   socket.on(HORIZON__DRAFTED_CARDS, (keptCard, passedCards) => {
     const username = socket.username;
     keptCardsDict = new Map([...keptCardsDict, [username, keptCard]]);
     passedCardsDict = new Map([...passedCardsDict, [username, passedCards]]);
+    gameLog(`${username} has passed ${passedCards.length} cards.`);
 
     console.log(`${username} kept ${keptCard.id} and passed ${passedCards.map(c => c.id).join(", ")}`);
 
     const everyoneReady = usernames.every(u => passedCardsDict.has(u));
     if (everyoneReady) {
-      console.log(horizonHands);
       horizonHands = draftCards(usernames, horizonHands, passedCardsDict);
-      console.log(horizonHands);
       horizonHands.forEach((hand, username) => {
         io.emit(UPDATE_HORIZON_HAND, username, hand);
       });
+      if (passedCards.length == 2) {
+        gameLog("Second round of drafting.");
+        passedCardsDict = new Map();
+      } else if (passedCards.length == 1) {
+        gameLog("Drafting complete.");
+      }
     }
   });
 

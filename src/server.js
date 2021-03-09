@@ -37,6 +37,7 @@ const {
 } = require('./SocketEvents');
 
 
+let gameLogMessages = [];
 let usernames = [];
 let disconnectedUsers = [];
 let diceDict = new Map();  // username => dice array
@@ -181,7 +182,8 @@ io.on('connection', (socket) => {
 
 
 function gameLog(message) {
-  io.emit(GAME_LOG_MESSAGE, message);
+  gameLogMessages = [...gameLogMessages, message];
+  io.emit(GAME_LOG_MESSAGE, gameLogMessages);
 }
 
 function sendGameState(socket) {

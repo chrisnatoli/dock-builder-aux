@@ -5,17 +5,13 @@ class GameLog extends React.Component {
   constructor(props) {
     super(props);
     this.container = React.createRef();
-    this.state = {
-      logMessages: [],
-    }
+    this.state = { gameLogMessages: [] }
   }
 
   componentDidMount() {
-    this.props.socket.on(GAME_LOG_MESSAGE, (message) => {
-      this.setState(prevState => (
-        { logMessages: [...prevState.logMessages, message] }
-      ));
-    });
+    this.props.socket.on(GAME_LOG_MESSAGE,
+      (gameLogMessages) => this.setState({ gameLogMessages })
+    );
   }
 
   componentDidUpdate() {
@@ -33,7 +29,7 @@ class GameLog extends React.Component {
         <h3>Game Log</h3>
         <div className="LogMessageContainer" ref={this.container}>
           {
-            this.state.logMessages.map((message, index) => (
+            this.state.gameLogMessages.map((message, index) => (
               <div key={index} className="LogMessage">{message}</div>
             ))
           }

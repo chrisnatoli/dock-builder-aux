@@ -64,4 +64,33 @@ const dealCards = (drawPile, discardPile, hands, numToDeal) => {
   return { newDrawPile, newDiscardPile, newHands };
 }
 
-module.exports = { initHorizonDeck, drawCards, dealCards };
+const draftCards = (orderedUsernames, hands, passedCardsDict) => {
+  let newHands = new Map([...hands]);
+
+  for (let i=0; i<orderedUsernames.length; i++) {
+    const thisUser = orderedUsernames[i];
+    const nextUserIndex = (i === orderedUsernames.length - 1) ? 0 : i+1;
+    const nextUser = orderedUsernames[nextUserIndex];
+
+    const thisHand = newHands.get(thisUser).filter(card => (
+      !passedCardsDict.get(thisUser).map(c => c.id).includes(card.id)
+    ));
+    const nextHand = [
+      ...newHands.get(nextUser),
+      ...passedCardsDict.get(thisUser)
+    ];
+
+    newHands = new Map([
+      ...newHands,
+      [thisUser, thisHand],
+      [nextUser, nextHand]
+    ]);
+
+  }
+
+  return newHands;
+}
+
+
+
+module.exports = { initHorizonDeck, drawCards, dealCards, draftCards };

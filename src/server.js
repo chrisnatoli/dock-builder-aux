@@ -3,7 +3,12 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server, { cors: { origin: '*' } });
 const { initDice, drawDie, putBack, setDie } = require('./game_state/Dice');
-const { initHorizonDeck, drawCards, dealCards } = require('./game_state/Deck');
+const {
+  initHorizonDeck,
+  drawCards,
+  dealCards,
+  draftCards
+} = require('./game_state/Deck');
 
 const PORT = process.env.PORT || 3030;
 //app.use(express.static(__dirname + '/../build')); // FOR BUILD
@@ -21,6 +26,7 @@ const {
   DICE__SET_DIE,
   HORIZON__DRAW_CARD,
   HORIZON__DEAL_CARDS,
+  HORIZON__DRAFTED_CARDS,
 
   LOG_BACK_IN,
   GAME_LOG_MESSAGE,
@@ -36,6 +42,9 @@ let disconnectedUsers = [];
 let diceDict = new Map();  // username => dice array
 let { horizonDrawPile, horizonDiscardPile } = initHorizonDeck();
 let horizonHands = new Map(); // username => card array
+let keptCardsDict = new Map(); // username => card array
+let passedCardsDict = new Map(); // username => card array
+
 
 io.on('connection', (socket) => {
   console.log(`New socket connected (socket ID: ${socket.id})`);
@@ -140,10 +149,31 @@ io.on('connection', (socket) => {
       newHands: horizonHands
     }= dealCards(horizonDrawPile, horizonDiscardPile, horizonHands, numToDeal));
 
+    keptCardsDict = new Map();
+    passedCardsDict = new Map();
+
     io.emit(UPDATE_HORIZON_DECK, horizonDrawPile, horizonDiscardPile);
     horizonHands.forEach((hand, username) => {
       io.emit(UPDATE_HORIZON_HAND, username, hand);
     });
+  });
+
+  socket.on(HORIZON__DRAFTED_CARDS, (keptCard, passedCards) => {
+    const username = socket.username;
+    keptCardsDict = new Map([...keptCardsDict, [username, keptCard]]);
+    passedCardsDict = new Map([...passedCardsDict, [username, passedCards]]);
+
+    console.log(`${username} kept ${keptCard.id} and passed ${passedCards.map(c => c.id).join(", ")}`);
+
+    const everyoneReady = usernames.every(u => passedCardsDict.has(u));
+    if (everyoneReady) {
+      console.log(horizonHands);
+      horizonHands = draftCards(usernames, horizonHands, passedCardsDict);
+      console.log(horizonHands);
+      horizonHands.forEach((hand, username) => {
+        io.emit(UPDATE_HORIZON_HAND, username, hand);
+      });
+    }
   });
 
 });

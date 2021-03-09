@@ -87,6 +87,6 @@ div.HorizonCard div.InsideCard {
   height: 100%;
 }
 
-div.HorizonHand input {
+div.HorizonHand input[type=radio] {
   display: none;
 }

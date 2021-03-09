@@ -1,5 +1,6 @@
 import React from 'react';
 import HorizonCard from './HorizonCard';
+import HorizonHand from './HorizonHand';
 import {
   HORIZON__DRAW_CARD,
   HORIZON__DEAL_CARDS,
@@ -53,9 +54,13 @@ class HorizonDeckContainer extends React.Component {
   }
 
   render() {
-    const { username } = this.props;
+    const { username, socket } = this.props;
     const { drawPile, discardPile, hands } = this.state;
+
     const numCardsToDeal = this.numToDeal * hands.size;
+    const enoughCards = drawPile.length + discardPile.length >= numCardsToDeal;
+    const anyPlayerHasCards = [...hands.values()].some(h => h.length > 0);
+    const disableDeal = anyPlayerHasCards || !enoughCards;
 
     return (
       <div className="HorizonDeckContainer container">
@@ -66,17 +71,7 @@ class HorizonDeckContainer extends React.Component {
 
         <br/>
 
-        <button
-          onClick={this.drawCard}
-          disabled={drawPile.length === 0}
-          >
-          Draw
-        </button>
-
-        <button
-          onClick={this.dealCards}
-          disabled={drawPile.length + discardPile.length < numCardsToDeal}
-          >
+        <button onClick={this.dealCards} disabled={disableDeal}>
           Deal
         </button>
 
@@ -91,11 +86,16 @@ class HorizonDeckContainer extends React.Component {
 
         {
           [...hands].map(([u, hand]) => (
-            <div className="HorizonHand" key={u}>
+            <div key={u}>
               {`${u}'s cards: `}
               {
                 (u === username)
-                ? hand.map(card => <HorizonCard card={card} key={card.id} />)
+                ?
+                <HorizonHand
+                  socket={socket}
+                  username={username}
+                  hand={hand}
+                  />
                 : hand
               }
             </div>

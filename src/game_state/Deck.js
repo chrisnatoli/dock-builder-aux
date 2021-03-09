@@ -1,12 +1,12 @@
 const initHorizonDeck = () => {
-  let nums = [...Array(15).keys()].map(i => i+1);
+  let nums = [...Array(10).keys()].map(i => i+1);
   let horizonDrawPile = nums.map(i => (Object.freeze({
     id: "card"+i,
     num: i,
   })));
   horizonDrawPile = shuffle(horizonDrawPile);
 
-  nums = nums.map(i => i+15);
+  nums = nums.map(i => i+10);
   const horizonDiscardPile = nums.map(i => (Object.freeze({
     id: "card"+i,
     num: i,

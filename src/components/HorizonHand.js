@@ -30,7 +30,12 @@ class HorizonHand extends React.Component {
                   checked={selectedOption===card.id}
                   onChange={this.handleChange}
                   />
-                <HorizonCard card={card} key={card.id} />
+
+                <HorizonCard
+                  card={card}
+                  key={card.id}
+                  checked={selectedOption===card.id}
+                  />
               </label>
             ))}
 

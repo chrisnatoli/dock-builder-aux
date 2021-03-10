@@ -36,9 +36,10 @@ const {
 } = require('./SocketEvents');
 
 
-let gameLogMessages = [];
 let usernames = [];
 let disconnectedUsers = [];
+let sockets = new Map(); // username => socket
+let gameLogMessages = [];
 let diceDict = new Map();  // username => dice array
 let { horizonDrawPile, horizonDiscardPile } = initHorizonDeck();
 let horizonHands = new Map(); // username => card array
@@ -58,6 +59,9 @@ io.on('connection', (socket) => {
   socket.on(USER_LOGGED_IN, (username) => {
     socket.username = username;
     usernames = [...usernames, username];
+    sockets = new Map([...sockets, [username, socket]]);
+    console.log(sockets);
+
     io.emit(UPDATE_USERNAME_LIST, usernames);
     gameLog(`${username} logged in.`);
 
@@ -84,8 +88,9 @@ io.on('connection', (socket) => {
       disconnectedUsers = disconnectedUsers.filter(u => u !== username);
       usernames = [...usernames, username];
       socket.username = username;
+      sockets = new Map([...sockets, [username, socket]]);
+      console.log(sockets);
 
-      // Send entire game state
       socket.emit(LOG_BACK_IN, username);
       sendGameState(socket);
 

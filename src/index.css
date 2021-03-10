@@ -75,7 +75,7 @@ div.HorizonCard.highlighted {
   border-style: solid;
   border-color: CornflowerBlue;
 }
-div.HorizonCard:not(.highlighted) {
+div.CardsToDraftWrapper div.HorizonCard:not(.highlighted) {
   border-width: 3px;
   border-style: solid;
   border-color: transparent;
@@ -89,4 +89,12 @@ div.HorizonCard div.InsideCard {
 
 div.HorizonHand input[type=radio] {
   display: none;
+}
+div.KeptCardsWrapper {
+  display: inline-block;
+  margin-right: 20px;
+}
+div.CardsToDraftWrapper {
+  display: inline-block;
+  margin-left: 20px;
 }

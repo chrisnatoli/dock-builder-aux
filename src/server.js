@@ -7,7 +7,7 @@ const {
   initHorizonDeck,
   drawCards,
   dealCards,
-  draftCards
+  passCards,
 } = require('./game_state/Deck');
 
 const PORT = process.env.PORT || 3030;
@@ -33,6 +33,7 @@ const {
   UPDATE_DICE,
   UPDATE_HORIZON_DECK,
   UPDATE_HORIZON_HAND,
+  UPDATE_KEPT_HORIZON_CARDS,
 } = require('./SocketEvents');
 
 
@@ -133,7 +134,7 @@ io.on('connection', (socket) => {
       newHands: horizonHands
     }= dealCards(horizonDrawPile, horizonDiscardPile, horizonHands, numToDeal));
 
-    keptCardsDict = new Map();
+    keptCardsDict = new Map(usernames.map( username => [username, []] ));
     passedCardsDict = new Map();
 
     io.emit(UPDATE_HORIZON_DECK, horizonDrawPile, horizonDiscardPile);
@@ -147,19 +148,22 @@ io.on('connection', (socket) => {
 
   socket.on(HORIZON__DRAFTED_CARDS, (keptCard, passedCards) => {
     const username = socket.username;
-    keptCardsDict = new Map([...keptCardsDict, [username, keptCard]]);
+    updatedKeptCards = [...keptCardsDict.get(username), keptCard];
+    keptCardsDict = new Map([...keptCardsDict, [username, updatedKeptCards]]);
     passedCardsDict = new Map([...passedCardsDict, [username, passedCards]]);
-    gameLog(`${username} has passed ${passedCards.length} cards.`);
 
+    gameLog(`${username} has passed ${passedCards.length} cards.`);
     console.log(`${username} kept ${keptCard.id} and passed ${passedCards.map(c => c.id).join(", ")}`);
 
     const everyoneReady = usernames.every(u => passedCardsDict.has(u));
     if (everyoneReady) {
-      horizonHands = draftCards(usernames, horizonHands, passedCardsDict);
+      horizonHands = passCards(usernames, passedCardsDict);
 
       usernames.forEach((username) => {
         const hand = horizonHands.get(username);
+        const keptCards = keptCardsDict.get(username);
         sockets.get(username).emit(UPDATE_HORIZON_HAND, hand);
+        sockets.get(username).emit(UPDATE_KEPT_HORIZON_CARDS, keptCards);
       });
 
       if (passedCards.length == 2) {

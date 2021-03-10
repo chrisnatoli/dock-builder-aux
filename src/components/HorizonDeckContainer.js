@@ -2,7 +2,6 @@ import React from 'react';
 import HorizonCard from './HorizonCard';
 import HorizonHand from './HorizonHand';
 import {
-  HORIZON__DRAW_CARD,
   HORIZON__DEAL_CARDS,
   UPDATE_HORIZON_DECK,
   UPDATE_HORIZON_HANDS,
@@ -45,10 +44,6 @@ class HorizonDeckContainer extends React.Component {
         return { hands: newHands };
       });
     });
-  }
-
-  drawCard = () => {
-    this.props.socket.emit(HORIZON__DRAW_CARD);
   }
 
   dealCards = () => {

@@ -24,7 +24,6 @@ const {
   DICE__DRAW_DIE,
   DICE__PUT_BACK,
   DICE__SET_DIE,
-  HORIZON__DRAW_CARD,
   HORIZON__DEAL_CARDS,
   HORIZON__DRAFTED_CARDS,
 
@@ -125,22 +124,6 @@ io.on('connection', (socket) => {
   });
 
 
-
-  socket.on(HORIZON__DRAW_CARD, () => {
-    const username = socket.username;
-    const hand = horizonHands.get(username);
-
-    let newHand;
-    ({
-      newDrawPile: horizonDrawPile,
-      newDiscardPile: horizonDiscardPile,
-      newHand: newHand
-    } = drawCards(horizonDrawPile, horizonDiscardPile, hand, 1));
-    horizonHands = new Map([...horizonHands, [username, newHand]]);
-
-    io.emit(UPDATE_HORIZON_DECK, horizonDrawPile, horizonDiscardPile);
-    io.emit(UPDATE_HORIZON_HANDS, [...horizonHands]);
-  });
 
   socket.on(HORIZON__DEAL_CARDS, (numToDeal) => {
     ({

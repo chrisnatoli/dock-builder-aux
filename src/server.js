@@ -33,7 +33,7 @@ const {
   UPDATE_USERNAME_LIST,
   UPDATE_DICE,
   UPDATE_HORIZON_DECK,
-  UPDATE_HORIZON_HAND,
+  UPDATE_HORIZON_HANDS,
 } = require('./SocketEvents');
 
 
@@ -64,12 +64,11 @@ io.on('connection', (socket) => {
 
     const dice = initDice(username)
     diceDict = new Map([...diceDict, [username, dice]]);
-    const emptyHand = []
-    horizonHands = new Map([...horizonHands, [username, emptyHand]]);
+    horizonHands = new Map([ ...horizonHands, [username, []] ]);
+    console.log(horizonHands);
 
-    // Inform other users of new user and inform new user of entire game state
     socket.broadcast.emit(UPDATE_DICE, username, dice);
-    socket.broadcast.emit(UPDATE_HORIZON_HAND, username, emptyHand);
+    socket.broadcast.emit(UPDATE_HORIZON_HANDS, [...horizonHands]);
     sendGameState(socket);
   });
 
@@ -140,7 +139,7 @@ io.on('connection', (socket) => {
     horizonHands = new Map([...horizonHands, [username, newHand]]);
 
     io.emit(UPDATE_HORIZON_DECK, horizonDrawPile, horizonDiscardPile);
-    io.emit(UPDATE_HORIZON_HAND, username, newHand);
+    io.emit(UPDATE_HORIZON_HANDS, [...horizonHands]);
   });
 
   socket.on(HORIZON__DEAL_CARDS, (numToDeal) => {
@@ -154,9 +153,7 @@ io.on('connection', (socket) => {
     passedCardsDict = new Map();
 
     io.emit(UPDATE_HORIZON_DECK, horizonDrawPile, horizonDiscardPile);
-    horizonHands.forEach((hand, username) => {
-      io.emit(UPDATE_HORIZON_HAND, username, hand);
-    });
+    io.emit(UPDATE_HORIZON_HANDS, [...horizonHands]);
     gameLog(`${numToDeal} Horizon cards were dealt to every player.`);
     gameLog("First round of drafting.");
   });
@@ -172,9 +169,7 @@ io.on('connection', (socket) => {
     const everyoneReady = usernames.every(u => passedCardsDict.has(u));
     if (everyoneReady) {
       horizonHands = draftCards(usernames, horizonHands, passedCardsDict);
-      horizonHands.forEach((hand, username) => {
-        io.emit(UPDATE_HORIZON_HAND, username, hand);
-      });
+      io.emit(UPDATE_HORIZON_HANDS, [...horizonHands]);
       if (passedCards.length == 2) {
         gameLog("Second round of drafting.");
         passedCardsDict = new Map();
@@ -199,8 +194,5 @@ function sendGameState(socket) {
   });
 
   socket.emit(UPDATE_HORIZON_DECK, horizonDrawPile, horizonDiscardPile);
-
-  horizonHands.forEach((hand, username) => {
-    socket.emit(UPDATE_HORIZON_HAND, username, hand);
-  });
+  socket.emit(UPDATE_HORIZON_HANDS, [...horizonHands]);
 }

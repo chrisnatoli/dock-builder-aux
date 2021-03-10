@@ -5,7 +5,7 @@ import {
   HORIZON__DRAW_CARD,
   HORIZON__DEAL_CARDS,
   UPDATE_HORIZON_DECK,
-  UPDATE_HORIZON_HAND,
+  UPDATE_HORIZON_HANDS,
 } from '../SocketEvents';
 
 
@@ -27,18 +27,20 @@ class HorizonDeckContainer extends React.Component {
        (drawPile, discardPile) => this.setState({ drawPile, discardPile })
     );
 
-    socket.on(UPDATE_HORIZON_HAND, (username, hand) => {
+    socket.on(UPDATE_HORIZON_HANDS, (horizonHands) => {
+      console.log(horizonHands);
       this.setState((prevState) => {
-        const oldHands = prevState.hands;
-        let newHands;
+        let newHands = new Map([...prevState.hands]);
 
-        if (username === this.props.username) {
-          newHands = new Map([...oldHands, [username, hand]]);
-        } else {
-          // Since an opponent's hand is private information, only remember the
-          // size of an opponent's hand.
-          newHands = new Map([...oldHands, [username, hand.length]]);
-        }
+        horizonHands.forEach(([username, hand]) => {
+          if (username === this.props.username) {
+            newHands = new Map([...newHands, [username, hand]]);
+          } else {
+            // Since an opponent's hand is private information, only remember the
+            // size of an opponent's hand.
+            newHands = new Map([...newHands, [username, hand.length]]);
+          }
+        });
 
         return { hands: newHands };
       });

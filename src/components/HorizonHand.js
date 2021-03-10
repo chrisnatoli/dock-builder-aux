@@ -25,7 +25,7 @@ class HorizonHand extends React.Component {
     );
 
     socket.on(UPDATE_KEPT_HORIZON_CARDS,
-      keptCards => this.setState({ keptCards })
+      keptCards => this.setState({ keptCards, isSubmitted: false })
     );
   }
 
@@ -64,36 +64,39 @@ class HorizonHand extends React.Component {
           </div>
         }
 
-        <div className="CardsToDraftWrapper">
-          <p>Cards to draft:</p>
+        {
+          hand.length > 0 &&
+          <div className="CardsToDraftWrapper">
+            <p>Cards to draft:</p>
 
-          <form onSubmit={this.handleSubmit}>
-            {hand.map(card => (
-              <label key={card.id}>
+            <form onSubmit={this.handleSubmit}>
+              {hand.map(card => (
+                <label key={card.id}>
+                  <input
+                    type="radio"
+                    value={card.id}
+                    checked={selectedOption===card.id}
+                    onChange={this.handleChange}
+                    />
+
+                  <HorizonCard
+                    card={card}
+                    checked={selectedOption===card.id}
+                    />
+                </label>
+              ))}
+
+              {
+                hand.length !== 0 &&
                 <input
-                  type="radio"
-                  value={card.id}
-                  checked={selectedOption===card.id}
-                  onChange={this.handleChange}
+                  type="submit"
+                  value="Keep"
+                  disabled={disableSubmit}
                   />
-
-                <HorizonCard
-                  card={card}
-                  checked={selectedOption===card.id}
-                  />
-              </label>
-            ))}
-
-            {
-              hand.length !== 0 &&
-              <input
-                type="submit"
-                value="Keep"
-                disabled={disableSubmit}
-                />
-            }
-          </form>
-        </div>
+              }
+            </form>
+          </div>
+        }
 
       </div>
     );

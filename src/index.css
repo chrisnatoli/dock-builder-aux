@@ -75,7 +75,7 @@ div.HorizonCard.highlighted {
   border-style: solid;
   border-color: CornflowerBlue;
 }
-div.CardsToDraftWrapper div.HorizonCard:not(.highlighted) {
+div.HorizonCard:not(.highlighted) {
   border-width: 3px;
   border-style: solid;
   border-color: transparent;
@@ -96,5 +96,4 @@ div.KeptCardsWrapper {
 }
 div.CardsToDraftWrapper {
   display: inline-block;
-  margin-left: 20px;
 }

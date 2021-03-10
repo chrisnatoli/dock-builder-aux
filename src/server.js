@@ -64,7 +64,6 @@ io.on('connection', (socket) => {
     const dice = initDice(username)
     diceDict = new Map([...diceDict, [username, dice]]);
     horizonHands = new Map([ ...horizonHands, [username, []] ]);
-    console.log(horizonHands);
 
     socket.broadcast.emit(UPDATE_DICE, username, dice);
     socket.broadcast.emit(UPDATE_HORIZON_HANDS, [...horizonHands]);

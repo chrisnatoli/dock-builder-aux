@@ -4,7 +4,8 @@ import io from 'socket.io-client';
 import LoginForm from './components/LoginForm';
 import GameLog from './components/GameLog';
 import DiceContainer from './components/DiceContainer';
-import HorizonDeckContainer from './components/HorizonDeckContainer';
+import HorizonDeck from './components/HorizonDeck';
+import HorizonHand from './components/HorizonHand';
 
 import {
   USER_LOGGED_IN,
@@ -93,7 +94,15 @@ class App extends React.Component {
               }
             </div>
 
-            <HorizonDeckContainer socket={socket} username={username} />
+            <HorizonDeck
+              socket={socket}
+              numPlayers={usernameList.length}
+              />
+
+            <HorizonHand
+              socket={socket}
+              username={username}
+              />
 
             <GameLog socket={socket} />
             <br />

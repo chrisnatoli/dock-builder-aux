@@ -10,4 +10,4 @@ function HorizonCard(props) {
   )
 }
 
-export default HorizonCard
+export default HorizonCard;

@@ -1,14 +1,24 @@
 import React from 'react';
 import HorizonCard from './HorizonCard';
-import { HORIZON__DRAFTED_CARDS } from '../SocketEvents';
+import { HORIZON__DRAFTED_CARDS, UPDATE_HORIZON_HANDS } from '../SocketEvents';
 
 class HorizonHand extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      hand: [],
       selectedOption: null,
       isSubmitted: false,
     };
+  }
+
+  componentDidMount() {
+    const { socket, username } = this.props;
+
+    socket.on(UPDATE_HORIZON_HANDS, (hands) => {
+      const newHand = hands.find(([u, hand]) => u === username)[1];
+      this.setState({ hand: newHand });
+    });
   }
 
   handleChange = (event) => {
@@ -23,45 +33,47 @@ class HorizonHand extends React.Component {
     event.preventDefault();
     this.setState({ isSubmitted: true });
     const cardId = this.state.selectedOption;
-    const { socket, hand } = this.props;
-    const keptCard = hand.filter(card => card.id === cardId)[0];
+    const { socket } = this.props;
+    const { hand } = this.state;
+    const keptCard = hand.find(card => card.id === cardId);
     const passedCards = hand.filter(card => card.id !== cardId);
     socket.emit(HORIZON__DRAFTED_CARDS, keptCard, passedCards);
   }
 
   render() {
-    const { hand } = this.props;
-    const { selectedOption, isSubmitted } = this.state;
+    const { hand, selectedOption, isSubmitted } = this.state;
     const disableSubmit = isSubmitted || selectedOption === null;
 
     return (
-      <div className="HorizonHand">
-          <form onSubmit={this.handleSubmit}>
-            {hand.map(card => (
-              <label key={card.id}>
-                <input
-                  type="radio"
-                  value={card.id}
-                  checked={selectedOption===card.id}
-                  onChange={this.handleChange}
-                  />
+      <div className="HorizonHand container">
+        <h3>Your hand of Horizon cards</h3>
 
-                <HorizonCard
-                  card={card}
-                  checked={selectedOption===card.id}
-                  />
-              </label>
-            ))}
-
-            {
-              hand.length !== 0 &&
+        <form onSubmit={this.handleSubmit}>
+          {hand.map(card => (
+            <label key={card.id}>
               <input
-                type="submit"
-                value="Keep"
-                disabled={disableSubmit}
+                type="radio"
+                value={card.id}
+                checked={selectedOption===card.id}
+                onChange={this.handleChange}
                 />
-            }
-          </form>
+
+              <HorizonCard
+                card={card}
+                checked={selectedOption===card.id}
+                />
+            </label>
+          ))}
+
+          {
+            hand.length !== 0 &&
+            <input
+              type="submit"
+              value="Keep"
+              disabled={disableSubmit}
+              />
+          }
+        </form>
       </div>
     );
   }

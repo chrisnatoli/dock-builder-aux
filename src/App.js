@@ -101,7 +101,6 @@ class App extends React.Component {
 
             <HorizonHand
               socket={socket}
-              username={username}
               />
 
             <GameLog socket={socket} />

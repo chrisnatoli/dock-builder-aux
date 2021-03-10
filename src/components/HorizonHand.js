@@ -1,6 +1,6 @@
 import React from 'react';
 import HorizonCard from './HorizonCard';
-import { HORIZON__DRAFTED_CARDS, UPDATE_HORIZON_HANDS } from '../SocketEvents';
+import { HORIZON__DRAFTED_CARDS, UPDATE_HORIZON_HAND } from '../SocketEvents';
 
 class HorizonHand extends React.Component {
   constructor(props) {
@@ -13,12 +13,9 @@ class HorizonHand extends React.Component {
   }
 
   componentDidMount() {
-    const { socket, username } = this.props;
+    const { socket } = this.props;
 
-    socket.on(UPDATE_HORIZON_HANDS, (hands) => {
-      const newHand = hands.find(([u, hand]) => u === username)[1];
-      this.setState({ hand: newHand });
-    });
+    socket.on(UPDATE_HORIZON_HAND, hand => this.setState({ hand }));
   }
 
   handleChange = (event) => {

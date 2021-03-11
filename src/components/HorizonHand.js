@@ -52,6 +52,10 @@ class HorizonHand extends React.Component {
     const { hand, keptCards, selectedOption, isSubmitted } = this.state;
     const disableSubmit = isSubmitted || selectedOption === null;
 
+    if (keptCards.length === 0 && hand.length === 0) {
+      return null;
+    }
+
     return (
       <div className="HorizonHand container">
         <h3>Your hand of Horizon cards</h3>

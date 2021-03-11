@@ -8,7 +8,7 @@ class LoginForm extends React.Component {
     this.state = {
       username: "",
       error: "",
-      logBackInAs: ""
+      logBackInAs: null,
     };
   }
 
@@ -28,17 +28,24 @@ class LoginForm extends React.Component {
     );
   }
 
-  handleUsernameCheck = (username, isUsernameTaken, isDisconnectedUser) => {
-    if (isUsernameTaken) {
-      this.setState({ error: "This username is already taken." });
-    } else if (isDisconnectedUser) {
-      this.setState({ error:
-        `A user with this name had disconnected. Are you trying to log back in as ${username}?`
-      });
-      this.setState({ logBackInAs: username });
-    } else {
-      this.setState({ error: "", logBackInAs: "" });
-      this.props.setUsername(username);
+  handleUsernameCheck = (username, error) => {
+    switch(error) {
+      case "USER_DISCONNECTED":
+        this.setState({
+          logBackInAs: username,
+          error: "A user with this name had disconnected. "
+                 + `Are you trying to log back in as ${username}?`
+        });
+        break;
+      case "USERNAME_TAKEN":
+        this.setState({ error: "This username is already taken." });
+        break;
+      case "USERNAME_BLANK":
+        this.setState({ error: "Your username cannot be blank." });
+        break;
+      default:
+        this.setState({ error: "", logBackInAs: null });
+        this.props.setUsername(username);
     }
   }
 
@@ -51,7 +58,7 @@ class LoginForm extends React.Component {
   render() {
     return (
       <div>
-        <form onSubmit={this.handleSubmit} className="loginForm">
+        <form onSubmit={this.handleSubmit} className="LoginForm">
           <label htmlFor="username">Name:</label>
           <input
             type="text"
@@ -65,9 +72,9 @@ class LoginForm extends React.Component {
 
         <div className="error">
           {this.state.error}
-          { this.state.logBackInAs
-            ? <button onClick={this.handleLogBackIn}>Log back in</button>
-            : null
+          {
+            this.state.logBackInAs
+            && <button onClick={this.handleLogBackIn}>Log back in</button>
           }
         </div>
       </div>

@@ -53,9 +53,16 @@ io.on('connection', (socket) => {
   console.log(`New socket connected (socket ID: ${socket.id})`);
 
   socket.on(CHECK_USERNAME, (username, callback) => {
-    const isUsernameTaken = usernames.includes(username);
-    const isDisconnectedUser = disconnectedUsers.includes(username);
-    callback(username, isUsernameTaken, isDisconnectedUser);
+    const trimmedUsername = username.trim();
+    let error = null;
+    if (disconnectedUsers.includes(trimmedUsername)) {
+      error = "USER_DISCONNECTED";
+    } else if (usernames.includes(trimmedUsername)) {
+      error = "USERNAME_TAKEN";
+    } else if (trimmedUsername === "") {
+      error = "USERNAME_BLANK";
+    }
+    callback(trimmedUsername, error);
   });
 
   socket.on(USER_LOGGED_IN, (username) => {

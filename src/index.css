@@ -65,10 +65,12 @@ div.HorizonDeck button {
 div.HorizonCard {
   display: inline-block;
   width: 60px;
-  height: 90px;
+  height: 50px;
   background-color: Gainsboro;
   border-radius: 5px;
   margin: 5px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 div.HorizonCard.highlighted {
   border-width: 3px;
@@ -80,11 +82,8 @@ div.HorizonCard:not(.highlighted) {
   border-style: solid;
   border-color: transparent;
 }
-div.HorizonCard div.InsideCard {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
+div.HorizonCard p {
+  text-align: center;
 }
 
 div.HorizonHand input[type=radio] {

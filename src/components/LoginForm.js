@@ -4,11 +4,16 @@ import { CHECK_USERNAME, USER_RECONNECTED } from '../SocketEvents';
 class LoginForm extends React.Component {
   constructor(props) {
     super(props);
+    this.textInput = React.createRef();
     this.state = {
       username: "",
       error: "",
       logBackInAs: ""
     };
+  }
+
+  componentDidMount() {
+    this.textInput.current.focus();
   }
 
   handleChange = (event) => {
@@ -53,6 +58,7 @@ class LoginForm extends React.Component {
             id="username"
             value={this.state.username}
             onChange={this.handleChange}
+            ref={this.textInput}
             />
           <input type="submit" value="Submit" />
         </form>

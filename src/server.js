@@ -76,6 +76,7 @@ io.on('connection', (socket) => {
     const dice = initDice(username)
     diceDict = new Map([...diceDict, [username, dice]]);
     horizonHands = new Map([ ...horizonHands, [username, []] ]);
+    keptCardsDict = new Map([ ...keptCardsDict, [username, []] ]);
 
     socket.broadcast.emit(UPDATE_DICE, username, dice);
     sendGameState(socket);
@@ -215,4 +216,5 @@ function sendGameState(socket) {
 
   socket.emit(UPDATE_HORIZON_DECK, horizonDrawPile, horizonDiscardPile);
   socket.emit(UPDATE_HORIZON_HAND, horizonHands.get(socket.username));
+  socket.emit(UPDATE_KEPT_HORIZON_CARDS, keptCardsDict.get(socket.username));
 }

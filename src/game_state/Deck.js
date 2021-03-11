@@ -15,6 +15,24 @@ const initHorizonDeck = () => {
   return { horizonDrawPile, horizonDiscardPile };
 }
 
+const importHorizonCards = () => {
+  const cardData = require('./HorizonCardsData');
+  return cardData.map(({ numGreen, numPurple, numOrange, numCopies }) => {
+    const copies = [...Array(numCopies).keys()].map((i) => {
+      const id = (
+        "horizoncard_"
+        + `${numGreen}g`
+        + `${numPurple}p`
+        + `${numOrange}o`
+        + `_copy${i+1}`
+      );
+      const card = Object.freeze({ id, numGreen, numPurple, numOrange });
+      return card;
+    });
+    return copies;
+  }).flat();
+}
+
 const shuffle = (cards) => {
   let newCards = [...cards];
   let n = cards.length;

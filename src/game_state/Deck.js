@@ -16,7 +16,7 @@ const initHorizonDeck = () => {
 }
 
 const importHorizonCards = () => {
-  const cardData = require('./HorizonCardsData');
+  const cardData = require('./HorizonCardData');
   return cardData.map(({ numGreen, numPurple, numOrange, numCopies }) => {
     const copies = [...Array(numCopies).keys()].map((i) => {
       const id = (

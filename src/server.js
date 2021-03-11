@@ -34,6 +34,7 @@ const {
   UPDATE_HORIZON_DECK,
   UPDATE_HORIZON_HAND,
   UPDATE_KEPT_HORIZON_CARDS,
+  ENABLE_DRAFTING,
 } = require('./SocketEvents');
 
 
@@ -137,12 +138,14 @@ io.on('connection', (socket) => {
     keptCardsDict = new Map(usernames.map( username => [username, []] ));
     passedCardsDict = new Map();
 
+    io.emit(ENABLE_DRAFTING, false);
     io.emit(UPDATE_HORIZON_DECK, horizonDrawPile, horizonDiscardPile);
     usernames.forEach((username) => {
       const hand = horizonHands.get(username);
       sockets.get(username).emit(UPDATE_HORIZON_HAND, hand);
+      sockets.get(username).emit(UPDATE_KEPT_HORIZON_CARDS, []);
     });
-    
+
     gameLog(`${numToDeal} Horizon cards were dealt to every player.`);
     gameLog("First round of drafting begins.");
   });
@@ -153,7 +156,8 @@ io.on('connection', (socket) => {
     keptCardsDict = new Map([...keptCardsDict, [username, updatedKeptCards]]);
     passedCardsDict = new Map([...passedCardsDict, [username, passedCards]]);
 
-    gameLog(`${username} has passed ${passedCards.length} cards.`);
+    gameLog(`${username} has passed ${passedCards.length} `
+      + `card${passedCards.length>1 ? "s" : ""}.`);
 
     const everyoneReady = usernames.every(u => passedCardsDict.has(u));
     if (everyoneReady) {
@@ -182,6 +186,7 @@ io.on('connection', (socket) => {
         gameLog("Second round of drafting begins.");
         passedCardsDict = new Map();
       } else {
+        io.emit(ENABLE_DRAFTING, true);
         gameLog("Drafting complete.");
       }
     }

@@ -31,7 +31,8 @@ const {
   LOG_BACK_IN,
   GAME_LOG_MESSAGE,
   UPDATE_USERNAME_LIST,
-  UPDATE_DICE,
+  DICE__ENABLE_DRAW,
+  DICE__UPDATE,
   UPDATE_HORIZON_DECK,
   UPDATE_HORIZON_HAND,
   UPDATE_KEPT_HORIZON_CARDS,
@@ -76,16 +77,15 @@ io.on('connection', (socket) => {
     usernames = [...usernames, username];
     sockets = new Map([...sockets, [username, socket]]);
 
-    io.emit(UPDATE_USERNAME_LIST, usernames);
-    gameLog(`${username} logged in.`);
-
     const dice = initDice(username)
     diceDict = new Map([...diceDict, [username, dice]]);
     horizonHands = new Map([ ...horizonHands, [username, []] ]);
     keptCardsDict = new Map([ ...keptCardsDict, [username, []] ]);
 
-    socket.broadcast.emit(UPDATE_DICE, username, dice);
+    io.emit(UPDATE_USERNAME_LIST, usernames);
+    socket.broadcast.emit(DICE__UPDATE, username, dice);
     sendGameState(socket);
+    gameLog(`${username} logged in.`);
   });
 
   socket.on('disconnect', () => {
@@ -114,7 +114,8 @@ io.on('connection', (socket) => {
 
   socket.on(START_GAME, () => {
     gameStep = STARTED;
-    io.emit(START_GAME);
+    io.emit(START_GAME, true);
+    io.emit(DICE__ENABLE_DRAW, true);
     gameLog("The game started.");
   });
 
@@ -127,7 +128,7 @@ io.on('connection', (socket) => {
     const dice = diceDict.get(username);
     const newDice = drawDie(dice, die);
     diceDict = new Map([...diceDict, [username, newDice]]);
-    io.emit(UPDATE_DICE, username, newDice);
+    io.emit(DICE__UPDATE, username, newDice);
   });
 
   socket.on(DICE__PUT_BACK, (die) => {
@@ -135,7 +136,7 @@ io.on('connection', (socket) => {
     const dice = diceDict.get(username);
     const newDice = putBack(dice, die);
     diceDict = new Map([...diceDict, [username, newDice]]);
-    io.emit(UPDATE_DICE, username, newDice);
+    io.emit(DICE__UPDATE, username, newDice);
   });
 
   socket.on(DICE__SET_DIE, (die, newValue) => {
@@ -143,7 +144,7 @@ io.on('connection', (socket) => {
     const dice = diceDict.get(username);
     const newDice = setDie(dice, die, newValue);
     diceDict = new Map([...diceDict, [username, newDice]]);
-    io.emit(UPDATE_DICE, username, newDice);
+    io.emit(DICE__UPDATE, username, newDice);
   });
 
 
@@ -221,9 +222,16 @@ function gameLog(message) {
   io.emit(GAME_LOG_MESSAGE, gameLogMessages);
 }
 
+function isDiceDrawingEnabled() {
+  return gameStep !== NOT_STARTED;
+}
+
 function sendGameState(socket) {
+  socket.emit(START_GAME, gameStep !== NOT_STARTED);
+  socket.emit(DICE__ENABLE_DRAW, isDiceDrawingEnabled());
+
   diceDict.forEach((dice, username) => {
-    socket.emit(UPDATE_DICE, username, dice);
+    socket.emit(DICE__UPDATE, username, dice);
   });
 
   socket.emit(UPDATE_HORIZON_DECK, horizonDrawPile, horizonDiscardPile);

@@ -1,21 +1,30 @@
 import React from 'react';
 import DieIcon from './DieIcon';
 import DieContainer from './DieContainer';
-import { DICE__DRAW_DIE, UPDATE_DICE } from '../SocketEvents';
+import {
+  DICE__DRAW_DIE,
+  DICE__ENABLE_DRAW,
+  DICE__UPDATE,
+} from '../SocketEvents';
 
 class DiceContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       dice: [],
+      isDrawingEnabled: false,
     }
   }
 
   componentDidMount() {
     const socket = this.props.socket;
 
-    socket.on(UPDATE_DICE, (username, dice) => {
-      if (this.props.username === username) {
+    socket.on(DICE__ENABLE_DRAW,
+      isDrawingEnabled => this.setState({ isDrawingEnabled })
+    );
+
+    socket.on(DICE__UPDATE, (username, dice) => {
+      if (this.props.username === username) { // TO DO
         this.setState({ dice });
       }
     });
@@ -30,7 +39,8 @@ class DiceContainer extends React.Component {
 
   render() {
     const { socket, username, isForThisUser } = this.props;
-    const { dice } = this.state;
+    const { dice, isDrawingEnabled } = this.state;
+
     let diceInBag = [], diceOnTable = [];
     if (dice) {
       diceInBag = dice.filter(d => !d.isOnTable);
@@ -65,7 +75,7 @@ class DiceContainer extends React.Component {
         {
           isForThisUser &&
           <button
-            disabled={diceInBag.length===0}
+            disabled={diceInBag.length===0 || !isDrawingEnabled}
             onClick={this.drawDie}
             >
             Draw

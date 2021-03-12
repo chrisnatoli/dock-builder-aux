@@ -49,7 +49,9 @@ class App extends React.Component {
       usernameList => this.setState({ usernameList })
     );
 
-    socket.on(START_GAME, () => this.setState({ isGameStarted: true }));
+    socket.on(START_GAME,
+      isGameStarted => this.setState({ isGameStarted })
+    );
   }
 
   setUsername = (username) => {

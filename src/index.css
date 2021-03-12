@@ -22,6 +22,12 @@ div.container {
   padding: 10px;
 }
 
+
+span.ThisUsername {
+  font-weight: bold;
+}
+
+
 div.DiceContainersForOpponents div.DiceContainer {
   display: inline-block;
 }

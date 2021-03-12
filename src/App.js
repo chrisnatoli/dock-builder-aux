@@ -2,6 +2,7 @@ import React from 'react';
 import './index.css';
 import io from 'socket.io-client';
 import LoginForm from './components/LoginForm';
+import UsernameList from './components/UsernameList';
 import GameLog from './components/GameLog';
 import DiceContainer from './components/DiceContainer';
 import HorizonDeck from './components/HorizonDeck';
@@ -72,8 +73,7 @@ class App extends React.Component {
           <LoginForm socket={socket} setUsername={this.setUsername} />
           :
           <div className="layout">
-            <span>Logged in! Welcome {username}.</span>
-            <div>Players: {usernameList.join(', ')}</div>
+            <UsernameList username={username} usernameList={usernameList} />
 
             <DiceContainer
               socket={socket}

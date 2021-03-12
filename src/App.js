@@ -13,6 +13,7 @@ import {
   USER_RECONNECTED,
   LOG_BACK_IN,
   UPDATE_USERNAME_LIST,
+  START_GAME,
 } from './SocketEvents';
 
 //const socketUrl = "/";                        // FOR BUILD
@@ -25,6 +26,7 @@ class App extends React.Component {
       socket: null,
       username: null,
       usernameList: [],
+      isGameStarted: false,
     };
   }
 
@@ -46,6 +48,8 @@ class App extends React.Component {
     socket.on(UPDATE_USERNAME_LIST,
       usernameList => this.setState({ usernameList })
     );
+
+    socket.on(START_GAME, () => this.setState({ isGameStarted: true }));
   }
 
   setUsername = (username) => {
@@ -53,12 +57,16 @@ class App extends React.Component {
     this.state.socket.emit(USER_LOGGED_IN, username);
   }
 
+  startGame = () => {
+    this.state.socket.emit(START_GAME);
+  }
+
   sendAhoy = () => {
     this.state.socket.emit('ahoy', this.state.username);
   }
 
   render() {
-    const { socket, username, usernameList } = this.state;
+    const { socket, username, usernameList, isGameStarted } = this.state;
 
     let opponents;
     if (username) {
@@ -74,6 +82,13 @@ class App extends React.Component {
           :
           <div className="layout">
             <UsernameList username={username} usernameList={usernameList} />
+
+            {
+              !isGameStarted &&
+              <button onClick={this.startGame}>
+                Start game
+              </button>
+            }
 
             <DiceContainer
               socket={socket}

@@ -3,6 +3,7 @@ module.exports = {
   CHECK_USERNAME:            "CHECK_USERNAME",
   USER_LOGGED_IN:            "USER_LOGGED_IN",
   USER_RECONNECTED:          "USER_RECONNECTED",
+  START_GAME:                "START_GAME",
   DICE__DRAW_DIE:            "DICE__DRAW_DIE",
   DICE__PUT_BACK:            "DICE__PUT_BACK",
   DICE__SET_DIE:             "DICE__SET_DIE",

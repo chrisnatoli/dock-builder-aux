@@ -21,6 +21,7 @@ const {
   CHECK_USERNAME,
   USER_LOGGED_IN,
   USER_RECONNECTED,
+  START_GAME,
   DICE__DRAW_DIE,
   DICE__PUT_BACK,
   DICE__SET_DIE,
@@ -36,6 +37,11 @@ const {
   UPDATE_KEPT_HORIZON_CARDS,
   ENABLE_DRAFTING,
 } = require('./SocketEvents');
+
+const NOT_STARTED = "NOT_STARTED";
+const STARTED     = "STARTED";
+let gameStep = NOT_STARTED;
+
 
 
 let usernames = [];
@@ -106,7 +112,13 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('ahoy', (username) => gameLog(`${username} says, Ahoy!`));
+  socket.on(START_GAME, () => {
+    gameStep = STARTED;
+    io.emit(START_GAME);
+    gameLog("The game started.");
+  });
+
+  socket.on('ahoy', (username) => gameLog(`${username} said, Ahoy!`));
 
 
 
@@ -164,7 +176,7 @@ io.on('connection', (socket) => {
     keptCardsDict = new Map([...keptCardsDict, [username, updatedKeptCards]]);
     passedCardsDict = new Map([...passedCardsDict, [username, passedCards]]);
 
-    gameLog(`${username} has passed ${passedCards.length} `
+    gameLog(`${username} passed ${passedCards.length} `
       + `card${passedCards.length>1 ? "s" : ""}.`);
 
     const everyoneReady = usernames.every(u => passedCardsDict.has(u));

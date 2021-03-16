@@ -11,8 +11,8 @@ const {
 } = require('./game_state/Deck');
 
 const PORT = process.env.PORT || 3030;
-app.use(express.static(__dirname + '/../build')); // FOR BUILD
-//app.use(express.static(__dirname + '/..'));        // FOR DEVELOPMENT
+//app.use(express.static(__dirname + '/../build')); // FOR BUILD
+app.use(express.static(__dirname + '/..'));        // FOR DEVELOPMENT
 server.listen(PORT, () => { console.log(`Connected to port ${PORT}`); });
 
 
@@ -50,8 +50,8 @@ let usernames = [];
 let disconnectedUsers = [];
 let sockets = new Map(); // username => socket
 let gameLogMessages = [];
-let diceDict;  // username => dice array
 let horizonDrawPile, horizonDiscardPile;
+let diceDict;  // username => dice array
 let horizonHands; // username => card array
 let keptCardsDict; // username => card array
 let passedCardsDict; // username => card array

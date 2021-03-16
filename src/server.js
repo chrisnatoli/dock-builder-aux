@@ -50,11 +50,11 @@ let usernames = [];
 let disconnectedUsers = [];
 let sockets = new Map(); // username => socket
 let gameLogMessages = [];
-let diceDict = new Map();  // username => dice array
-let { horizonDrawPile, horizonDiscardPile } = initHorizonDeck();
-let horizonHands = new Map(); // username => card array
-let keptCardsDict = new Map(); // username => card array
-let passedCardsDict = new Map(); // username => card array
+let diceDict;  // username => dice array
+let horizonDrawPile, horizonDiscardPile;
+let horizonHands; // username => card array
+let keptCardsDict; // username => card array
+let passedCardsDict; // username => card array
 
 
 io.on('connection', (socket) => {
@@ -80,14 +80,18 @@ io.on('connection', (socket) => {
     usernames = [...usernames, username];
     sockets = new Map([...sockets, [username, socket]]);
 
+    /*
     const dice = initDice(username)
     diceDict = new Map([...diceDict, [username, dice]]);
     horizonHands = new Map([ ...horizonHands, [username, []] ]);
     keptCardsDict = new Map([ ...keptCardsDict, [username, []] ]);
+    */
 
     io.emit(UPDATE_USERNAME_LIST, usernames);
+    /*
     socket.broadcast.emit(DICE__UPDATE, username, dice);
     sendGameState(socket);
+    */
     gameLog(`${username} logged in.`);
   });
 
@@ -104,7 +108,15 @@ io.on('connection', (socket) => {
   });
 
   socket.on(USER_RECONNECTED, (username) => {
-    if (disconnectedUsers.includes(username)) {
+    if (gameStep === NOT_STARTED) {
+      socket.username = username;
+      usernames = [...usernames, username];
+      sockets = new Map([...sockets, [username, socket]]);
+
+      io.emit(UPDATE_USERNAME_LIST, usernames);
+      gameLog(`${username} reconnected.`);
+      console.log(`${username} reconnected (before game started)`);
+    } else if (disconnectedUsers.includes(username)) {
       disconnectedUsers = disconnectedUsers.filter(u => u !== username);
       socket.username = username;
       sockets = new Map([...sockets, [username, socket]]);
@@ -112,16 +124,20 @@ io.on('connection', (socket) => {
       socket.emit(LOG_BACK_IN, username);
       sendGameState(socket);
 
-      io.emit(UPDATE_USERNAME_LIST, usernames);
       gameLog(`${username} reconnected.`);
+      console.log(`${username} reconnected (after game started)`);
     }
   });
 
   socket.on(START_GAME, () => {
     gameStep = ARRIVAL_PHASE_BEGINNING;
-    io.emit(START_GAME, true);
-    io.emit(DICE__ENABLE_DRAWING, isDiceDrawingEnabled());
-    io.emit(HORIZON__ENABLE_DEALING, isDealingEnabled());
+    ({ horizonDrawPile, horizonDiscardPile } = initHorizonDeck());
+    diceDict = new Map(usernames.map(u => [u, initDice(u)]));
+    horizonHands = new Map(usernames.map(u => [u, []]));
+    keptCardsDict = new Map(usernames.map(u => [u, []]));
+
+    usernames.forEach(u => sendGameState(sockets.get(u)));
+
     gameLog("The game started.");
   });
 
@@ -243,6 +259,7 @@ function isDealingEnabled() {
 
 function sendGameState(socket) {
   socket.emit(START_GAME, gameStep !== NOT_STARTED);
+  socket.emit(UPDATE_USERNAME_LIST, usernames);
   socket.emit(DICE__ENABLE_DRAWING, isDiceDrawingEnabled());
   socket.emit(HORIZON__ENABLE_DEALING, isDealingEnabled());
 

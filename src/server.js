@@ -115,7 +115,6 @@ io.on('connection', (socket) => {
 
       io.emit(UPDATE_USERNAME_LIST, usernames);
       gameLog(`${username} reconnected.`);
-      console.log(`${username} reconnected (before game started)`);
     } else if (disconnectedUsers.includes(username)) {
       disconnectedUsers = disconnectedUsers.filter(u => u !== username);
       socket.username = username;
@@ -123,9 +122,7 @@ io.on('connection', (socket) => {
 
       socket.emit(LOG_BACK_IN, username);
       sendGameState(socket);
-
       gameLog(`${username} reconnected.`);
-      console.log(`${username} reconnected (after game started)`);
     }
   });
 

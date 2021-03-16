@@ -5,7 +5,7 @@ import { DICE__PUT_BACK, DICE__SET_DIE } from '../SocketEvents';
 class DieContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = ({ selectedValue: "cube" });
+    this.state = ({ selectedValue: this.props.die.value || "cube" });
   }
 
   putBack = () => {

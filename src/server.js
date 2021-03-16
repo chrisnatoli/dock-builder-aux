@@ -93,8 +93,11 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     if (socket.username) {
-      usernames = usernames.filter(u => u !== socket.username);
-      disconnectedUsers = [...disconnectedUsers, socket.username];
+      if (gameStep === NOT_STARTED) {
+        usernames = usernames.filter(u => u !== socket.username);
+      } else {
+        disconnectedUsers = [...disconnectedUsers, socket.username];
+      }
       io.emit(UPDATE_USERNAME_LIST, usernames);
       gameLog(`${socket.username} disconnected.`);
     }
@@ -103,7 +106,6 @@ io.on('connection', (socket) => {
   socket.on(USER_RECONNECTED, (username) => {
     if (disconnectedUsers.includes(username)) {
       disconnectedUsers = disconnectedUsers.filter(u => u !== username);
-      usernames = [...usernames, username];
       socket.username = username;
       sockets = new Map([...sockets, [username, socket]]);
 

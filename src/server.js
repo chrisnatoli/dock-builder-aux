@@ -64,6 +64,8 @@ io.on('connection', (socket) => {
     let error = null;
     if (disconnectedUsers.includes(trimmedUsername)) {
       error = "USER_DISCONNECTED";
+    } else if (gameStep !== NOT_STARTED) {
+      error = "GAME_ALREADY_STARTED";
     } else if (usernames.includes(trimmedUsername)) {
       error = "USERNAME_TAKEN";
     } else if (trimmedUsername === "") {

@@ -37,6 +37,9 @@ class LoginForm extends React.Component {
                  + `Are you trying to log back in as ${username}?`
         });
         break;
+      case "GAME_ALREADY_STARTED":
+        this.setState({ error: "Sorry, the game has already started." });
+        break;
       case "USERNAME_TAKEN":
         this.setState({ error: "This username is already taken." });
         break;

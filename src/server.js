@@ -53,6 +53,7 @@ let gameLogMessages = [];
 let horizonDrawPile, horizonDiscardPile;
 let diceDict;  // username => dice array
 let horizonHands; // username => card array
+let chosenCardsDict; // username => card array
 let keptCardsDict; // username => card array
 let passedCardsDict; // username => card array
 
@@ -175,7 +176,8 @@ io.on('connection', (socket) => {
       newHands: horizonHands
     }= dealCards(horizonDrawPile, horizonDiscardPile, horizonHands, numToDeal));
 
-    keptCardsDict = new Map(usernames.map( username => [username, []] ));
+    chosenCardsDict = new Map();
+    keptCardsDict = new Map(usernames.map(u => [u, []]));
     passedCardsDict = new Map();
 
     gameStep = ARRIVAL_PHASE_DRAFTING;
@@ -191,10 +193,9 @@ io.on('connection', (socket) => {
     gameLog("First round of drafting begins.");
   });
 
-  socket.on(HORIZON__DRAFTED_CARDS, (keptCard, passedCards) => {
+  socket.on(HORIZON__DRAFTED_CARDS, (chosenCard, passedCards) => {
     const username = socket.username;
-    updatedKeptCards = [...keptCardsDict.get(username), keptCard];
-    keptCardsDict = new Map([...keptCardsDict, [username, updatedKeptCards]]);
+    chosenCardsDict = new Map([...chosenCardsDict, [username, chosenCard]]);
     passedCardsDict = new Map([...passedCardsDict, [username, passedCards]]);
 
     gameLog(`${username} passed ${passedCards.length} `
@@ -203,6 +204,10 @@ io.on('connection', (socket) => {
     const everyoneReady = usernames.every(u => passedCardsDict.has(u));
     if (everyoneReady) {
       horizonHands = passCards(usernames, passedCardsDict);
+      keptCardsDict = new Map([...keptCardsDict].map(
+        ([u, keptCards]) => [u, [...keptCards, chosenCardsDict.get(u)] ]
+      ));
+      chosenCardsDict = new Map();
 
       const isLastRound = horizonHands.get(username).length === 1;
       if (isLastRound) {
@@ -255,16 +260,16 @@ function isDealingEnabled() {
 }
 
 function sendGameState(socket) {
+  const username = socket.username;
+
   socket.emit(START_GAME, gameStep !== NOT_STARTED);
   socket.emit(UPDATE_USERNAME_LIST, usernames);
   socket.emit(DICE__ENABLE_DRAWING, isDiceDrawingEnabled());
   socket.emit(HORIZON__ENABLE_DEALING, isDealingEnabled());
 
-  diceDict.forEach((dice, username) => {
-    socket.emit(DICE__UPDATE, username, dice);
-  });
+  diceDict.forEach((dice, u) => socket.emit(DICE__UPDATE, u, dice));
 
   socket.emit(HORIZON__UPDATE_DECK, horizonDrawPile, horizonDiscardPile);
-  socket.emit(HORIZON__UPDATE_HAND, horizonHands.get(socket.username));
-  socket.emit(HORIZON__UPDATE_KEPT_CARDS, keptCardsDict.get(socket.username));
+  socket.emit(HORIZON__UPDATE_HAND, horizonHands.get(username));
+  socket.emit(HORIZON__UPDATE_KEPT_CARDS, keptCardsDict.get(username));
 }

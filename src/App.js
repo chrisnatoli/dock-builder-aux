@@ -87,9 +87,7 @@ class App extends React.Component {
 
             {
               !isGameStarted &&
-              <button onClick={this.startGame}>
-                Start game
-              </button>
+              <button onClick={this.startGame}>Start game</button>
             }
 
             <DiceContainer

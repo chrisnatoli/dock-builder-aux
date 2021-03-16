@@ -2,8 +2,8 @@ import React from 'react';
 import HorizonCard from './HorizonCard';
 import {
   HORIZON__DEAL_CARDS,
-  UPDATE_HORIZON_DECK,
-  ENABLE_DRAFTING,
+  HORIZON__UPDATE_DECK,
+  HORIZON__ENABLE_DEALING,
 } from '../SocketEvents';
 
 
@@ -13,34 +13,28 @@ class HorizonDeck extends React.Component {
     this.state = {
       drawPile: [],
       discardPile: [],
-      isDraftingEnabled: true,
+      isDealingEnabled: false,
     };
-    this.numToDeal = 3;
   }
 
   componentDidMount() {
     const socket = this.props.socket;
 
-    socket.on(UPDATE_HORIZON_DECK,
+    socket.on(HORIZON__UPDATE_DECK,
        (drawPile, discardPile) => this.setState({ drawPile, discardPile })
     );
 
-    socket.on(ENABLE_DRAFTING,
-      isDraftingEnabled => this.setState({ isDraftingEnabled })
+    socket.on(HORIZON__ENABLE_DEALING,
+      isDealingEnabled => this.setState({ isDealingEnabled })
     );
   }
 
   dealCards = () => {
-    this.props.socket.emit(HORIZON__DEAL_CARDS, this.numToDeal);
+    this.props.socket.emit(HORIZON__DEAL_CARDS);
   }
 
   render() {
-    const { numPlayers } = this.props;
-    const { drawPile, discardPile, isDraftingEnabled } = this.state;
-
-    const numCardsToDeal = this.numToDeal * numPlayers;
-    const enoughCards = drawPile.length + discardPile.length >= numCardsToDeal;
-    const enableDeal = isDraftingEnabled && enoughCards;
+    const { drawPile, discardPile, isDealingEnabled } = this.state;
 
     return (
       <div className="HorizonDeck container">
@@ -53,7 +47,7 @@ class HorizonDeck extends React.Component {
 
         <br/>
 
-        <button onClick={this.dealCards} disabled={!enableDeal}>
+        <button onClick={this.dealCards} disabled={!isDealingEnabled}>
           Deal
         </button>
 

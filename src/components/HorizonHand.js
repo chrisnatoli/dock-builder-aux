@@ -2,8 +2,8 @@ import React from 'react';
 import HorizonCard from './HorizonCard';
 import {
   HORIZON__DRAFTED_CARDS,
-  UPDATE_HORIZON_HAND,
-  UPDATE_KEPT_HORIZON_CARDS,
+  HORIZON__UPDATE_HAND,
+  HORIZON__UPDATE_KEPT_CARDS,
 } from '../SocketEvents';
 
 class HorizonHand extends React.Component {
@@ -20,11 +20,11 @@ class HorizonHand extends React.Component {
   componentDidMount() {
     const { socket } = this.props;
 
-    socket.on(UPDATE_HORIZON_HAND,
+    socket.on(HORIZON__UPDATE_HAND,
       hand => this.setState({ hand })
     );
 
-    socket.on(UPDATE_KEPT_HORIZON_CARDS,
+    socket.on(HORIZON__UPDATE_KEPT_CARDS,
       keptCards => this.setState({ keptCards, isSubmitted: false })
     );
   }

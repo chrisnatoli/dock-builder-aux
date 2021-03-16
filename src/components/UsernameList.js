@@ -6,12 +6,9 @@ function UsernameList(props) {
       {"Players: "}
       {
         props.usernameList.map((u, index) => (
-          <span>
+          <span key={u}>
             {(index ? ", " : "")}
-            <span
-              key={u}
-              className={`${u===props.username ? "ThisUsername" : ""}`}
-              >
+            <span className={`${u===props.username ? "ThisUsername" : ""}`}>
               {u}
             </span>
           </span>

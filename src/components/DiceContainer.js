@@ -3,7 +3,7 @@ import DieIcon from './DieIcon';
 import DieContainer from './DieContainer';
 import {
   DICE__DRAW_DIE,
-  DICE__ENABLE_DRAW,
+  DICE__ENABLE_DRAWING,
   DICE__UPDATE,
 } from '../SocketEvents';
 
@@ -19,7 +19,7 @@ class DiceContainer extends React.Component {
   componentDidMount() {
     const socket = this.props.socket;
 
-    socket.on(DICE__ENABLE_DRAW,
+    socket.on(DICE__ENABLE_DRAWING,
       isDrawingEnabled => this.setState({ isDrawingEnabled })
     );
 

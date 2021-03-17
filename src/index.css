@@ -69,8 +69,16 @@ div.LogMessageContainer {
 
 
 
-p.NumCards {
-  font-size: 13px;
+div.HorizonContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+div.HorizonDeckContainer {
+  flex-grow: 1;
+}
+div.HorizonHand {
+  flex-grow: 1;
 }
 
 div.HorizonCard {
@@ -97,6 +105,9 @@ div.HorizonCard p {
   text-align: center;
 }
 
+p.NumCards {
+  font-size: 13px;
+}
 div.DrawPileContainer {
   display: inline-block;
   vertical-align: top;

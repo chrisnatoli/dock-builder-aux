@@ -106,8 +106,10 @@ class App extends React.Component {
                   ))}
                 </div>
 
-                <HorizonDeckContainer socket={socket} />
-                <HorizonHand socket={socket} />
+                <div className="HorizonContainer">
+                  <HorizonDeckContainer socket={socket} />
+                  <HorizonHand socket={socket} />
+                </div>
               </div>
               :
               <button onClick={this.startGame}>Start game</button>

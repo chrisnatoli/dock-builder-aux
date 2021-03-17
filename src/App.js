@@ -82,44 +82,38 @@ class App extends React.Component {
           ?
           <LoginForm socket={socket} setUsername={this.setUsername} />
           :
-          <div className="layout">
+          <div className="Layout">
             <UsernameList username={username} usernameList={usernameList} />
 
             {
-              !isGameStarted &&
+              isGameStarted
+              ?
+              <div className="GameUI">
+                <DiceContainer
+                  socket={socket}
+                  username={username}
+                  isForThisUser={true}
+                  />
+
+                <div className="DiceContainersForOpponents">
+                  {opponents.map((username) => (
+                    <DiceContainer
+                      key={username}
+                      socket={socket}
+                      username={username}
+                      isForThisUser={false}
+                      />
+                  ))}
+                </div>
+
+                <HorizonDeck socket={socket} numPlayers={usernameList.length} />
+                <HorizonHand socket={socket} />
+              </div>
+              :
               <button onClick={this.startGame}>Start game</button>
             }
 
-            <DiceContainer
-              socket={socket}
-              username={username}
-              isForThisUser={true}
-              />
-
-            <div className="DiceContainersForOpponents">
-              {
-                opponents.map((username) => (
-                  <DiceContainer
-                    key={username}
-                    socket={socket}
-                    username={username}
-                    isForThisUser={false}
-                    />
-                ))
-              }
-            </div>
-
-            <HorizonDeck
-              socket={socket}
-              numPlayers={usernameList.length}
-              />
-
-            <HorizonHand
-              socket={socket}
-              />
-
             <GameLog socket={socket} />
-            <br />
             <button onClick={this.sendAhoy}>Ahoy!</button>
           </div>
         }

@@ -22,6 +22,9 @@ div.container {
   padding: 10px;
 }
 
+div.Layout button {
+  display: block;
+}
 
 span.ThisUsername {
   font-weight: bold;

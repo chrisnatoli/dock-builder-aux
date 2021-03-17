@@ -24,7 +24,7 @@ class DiceContainer extends React.Component {
     );
 
     socket.on(DICE__UPDATE, (username, dice) => {
-      if (this.props.username === username) { // TO DO
+      if (this.props.username === username) {
         this.setState({ dice });
       }
     });

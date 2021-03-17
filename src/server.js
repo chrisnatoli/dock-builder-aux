@@ -83,6 +83,11 @@ io.on('connection', (socket) => {
     sockets = new Map([...sockets, [username, socket]]);
     io.emit(UPDATE_USERNAME_LIST, usernames);
     gameLog(`${username} logged in.`);
+
+    // In case clients were playing a game, the server resets, and then the same
+    // clients reconnect with the same mid-game UI, inform them that this is a
+    // new game and the UI from the old game should be wiped.
+    io.emit(START_GAME, false);
   });
 
   socket.on('disconnect', () => {

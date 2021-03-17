@@ -43,25 +43,25 @@ class HorizonDeckContainer extends React.Component {
       <div className="HorizonDeckContainer container">
         <h3>Horizon deck</h3>
 
-        <p>Draw pile:</p>
-        <p class="NumCards">
-          {`(${drawPile.length} card${drawPile.length!==1 ? "s" : ""})`}
-        </p>
-        <HorizonDeck />
+        <div className="DrawPileContainer">
+          <p>Draw pile:</p>
+          <p class="NumCards">
+            {`(${drawPile.length} card${drawPile.length!==1 ? "s" : ""})`}
+          </p>
+          <HorizonDeck />
 
-        <br/>
+          <button onClick={this.dealCards} disabled={!isDealingEnabled}>
+            Deal
+          </button>
+        </div>
 
-        <button onClick={this.dealCards} disabled={!isDealingEnabled}>
-          Deal
-        </button>
-
-        <br/>
-
-        <p>Discard pile:</p>
-        <p class="NumCards">
-          {`(${discardPile.length} card${discardPile.length!==1 ? "s" : ""})`}
-        </p>
-        <HorizonDeck topCard={lastDiscardedCard} />
+        <div className="DiscardPileContainer">
+          <p>Discard pile:</p>
+          <p class="NumCards">
+            {`(${discardPile.length} card${discardPile.length!==1 ? "s" : ""})`}
+          </p>
+          <HorizonDeck topCard={lastDiscardedCard} />
+        </div>
       </div>
       );
   }

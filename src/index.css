@@ -97,6 +97,16 @@ div.HorizonCard p {
   text-align: center;
 }
 
+div.DrawPileContainer {
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 40px;
+}
+div.DiscardPileContainer {
+  display: inline-block;
+  vertical-align: top;
+}
+
 div.HorizonHand input[type=radio] {
   display: none;
 }

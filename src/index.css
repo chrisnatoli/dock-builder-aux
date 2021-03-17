@@ -31,6 +31,7 @@ span.ThisUsername {
 }
 
 
+
 div.DiceContainersForOpponents div.DiceContainer {
   display: inline-block;
 }
@@ -54,6 +55,8 @@ span.DieIcon {
   font-size: 32px;
 }
 
+
+
 div.GameLog {
   display: inline-block;
 }
@@ -65,25 +68,10 @@ div.LogMessageContainer {
 }
 
 
-div.HorizonDrawPile {
-  display: inline-block;
-  width: 60px;
-  height: 90px;
-  background-color: Gainsboro;
-  border-radius: 5px;
-  margin: 5px;
-}
-div.HorizonDrawPile div.InnerWrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-div.HorizonDrawPile div.InnerWrapper p {
-  text-align: center;
+
+p.NumCards {
   font-size: 13px;
 }
-
 
 div.HorizonCard {
   display: inline-block;

@@ -1,6 +1,5 @@
 import React from 'react';
-import HorizonCard from './HorizonCard';
-import HorizonDrawPile from './HorizonDrawPile';
+import HorizonDeck from './HorizonDeck';
 import {
   HORIZON__DEAL_CARDS,
   HORIZON__UPDATE_DECK,
@@ -36,13 +35,19 @@ class HorizonDeckContainer extends React.Component {
 
   render() {
     const { drawPile, discardPile, isDealingEnabled } = this.state;
+    const lastDiscardedCard = (
+      discardPile.length!==0 ? discardPile[discardPile.length-1] : null
+    );
 
     return (
       <div className="HorizonDeckContainer container">
         <h3>Horizon deck</h3>
 
         <p>Draw pile:</p>
-        <HorizonDrawPile numCards={drawPile.length} />
+        <p class="NumCards">
+          {`(${drawPile.length} card${drawPile.length!==1 ? "s" : ""})`}
+        </p>
+        <HorizonDeck />
 
         <br/>
 
@@ -53,9 +58,10 @@ class HorizonDeckContainer extends React.Component {
         <br/>
 
         <p>Discard pile:</p>
-        {discardPile.map(card => (
-          <HorizonCard card={card} key={card.id} />
-        ))}
+        <p class="NumCards">
+          {`(${discardPile.length} card${discardPile.length!==1 ? "s" : ""})`}
+        </p>
+        <HorizonDeck topCard={lastDiscardedCard} />
       </div>
       );
   }

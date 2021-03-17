@@ -1,7 +1,8 @@
 const initHorizonDeck = () => {
-  let horizonDrawPile = importHorizonCards();
-  horizonDrawPile = shuffle(horizonDrawPile);
-  const horizonDiscardPile = [];
+  let horizonDrawPile = shuffle(importHorizonCards());
+
+  const horizonDiscardPile = horizonDrawPile.slice(-10);
+  horizonDrawPile = horizonDrawPile.slice(0,-10);
 
   return { horizonDrawPile, horizonDiscardPile };
 }

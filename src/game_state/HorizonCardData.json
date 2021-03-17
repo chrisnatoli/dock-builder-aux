@@ -1,0 +1,155 @@
+[
+  {
+    "numGreen":    2,
+    "numPurple":   1,
+    "numOrange":   0,
+    "numCopies":   4
+  },
+  {
+    "numGreen":    1,
+    "numPurple":   2,
+    "numOrange":   0,
+    "numCopies":   4
+  },
+  {
+    "numGreen":    0,
+    "numPurple":   2,
+    "numOrange":   1,
+    "numCopies":   4
+  },
+  {
+    "numGreen":    0,
+    "numPurple":   1,
+    "numOrange":   2,
+    "numCopies":   4
+  },
+  {
+    "numGreen":    2,
+    "numPurple":   0,
+    "numOrange":   1,
+    "numCopies":   4
+  },
+  {
+    "numGreen":    1,
+    "numPurple":   0,
+    "numOrange":   2,
+    "numCopies":   4
+  },
+
+
+  {
+    "numGreen":    2,
+    "numPurple":   2,
+    "numOrange":   0,
+    "numCopies":   3
+  },
+  {
+    "numGreen":    0,
+    "numPurple":   2,
+    "numOrange":   2,
+    "numCopies":   3
+  },
+  {
+    "numGreen":    2,
+    "numPurple":   0,
+    "numOrange":   2,
+    "numCopies":   3
+  },
+
+
+  {
+    "numGreen":    3,
+    "numPurple":   1,
+    "numOrange":   0,
+    "numCopies":   3
+  },
+  {
+    "numGreen":    1,
+    "numPurple":   3,
+    "numOrange":   0,
+    "numCopies":   3
+  },
+  {
+    "numGreen":    0,
+    "numPurple":   3,
+    "numOrange":   1,
+    "numCopies":   3
+  },
+  {
+    "numGreen":    0,
+    "numPurple":   1,
+    "numOrange":   3,
+    "numCopies":   3
+  },
+  {
+    "numGreen":    3,
+    "numPurple":   0,
+    "numOrange":   1,
+    "numCopies":   3
+  },
+  {
+    "numGreen":    1,
+    "numPurple":   0,
+    "numOrange":   3,
+    "numCopies":   3
+  },
+
+
+
+  {
+    "numGreen":    3,
+    "numPurple":   2,
+    "numOrange":   0,
+    "numCopies":   2
+  },
+  {
+    "numGreen":    2,
+    "numPurple":   3,
+    "numOrange":   0,
+    "numCopies":   2
+  },
+  {
+    "numGreen":    0,
+    "numPurple":   3,
+    "numOrange":   2,
+    "numCopies":   2
+  },
+  {
+    "numGreen":    0,
+    "numPurple":   2,
+    "numOrange":   3,
+    "numCopies":   2
+  },
+  {
+    "numGreen":    3,
+    "numPurple":   0,
+    "numOrange":   2,
+    "numCopies":   2
+  },
+  {
+    "numGreen":    2,
+    "numPurple":   0,
+    "numOrange":   3,
+    "numCopies":   2
+  },
+
+
+  {
+    "numGreen":    3,
+    "numPurple":   3,
+    "numOrange":   0,
+    "numCopies":   1
+  },
+  {
+    "numGreen":    0,
+    "numPurple":   3,
+    "numOrange":   3,
+    "numCopies":   1
+  },
+  {
+    "numGreen":    3,
+    "numPurple":   0,
+    "numOrange":   3,
+    "numCopies":   1
+  }
+]

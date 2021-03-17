@@ -17,7 +17,7 @@ function HorizonCard(props) {
       </p>
       <p>
         {[...Array(numOrange).keys()].map(i =>
-          <GiWoodenCrate key={i} style={{color: "orange"}} />
+          <GiWoodenCrate key={i} style={{color: "DarkOrange"}} />
         )}
       </p>
     </div>

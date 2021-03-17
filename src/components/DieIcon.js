@@ -22,8 +22,11 @@ class DieIcon extends React.Component {
         dieFace = <FaDiceD6 />;
     }
 
+    const color = this.props.die.color;
+    const displayColor = (color==="orange") ? "DarkOrange" : color
+
     return (
-      <span className="DieIcon" style={{color: this.props.die.color}}>
+      <span className="DieIcon" style={{ color: displayColor }}>
         {dieFace}
       </span>
     );

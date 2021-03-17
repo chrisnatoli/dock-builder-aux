@@ -22,7 +22,7 @@ class HorizonHand extends React.Component {
     const { socket } = this.props;
 
     socket.on(HORIZON__UPDATE_HAND,
-      hand => this.setState({ hand })
+      hand => this.setState({ hand, selectedOption: null })
     );
 
     socket.on(HORIZON__UPDATE_KEPT_CARDS,

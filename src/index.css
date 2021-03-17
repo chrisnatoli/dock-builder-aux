@@ -101,8 +101,13 @@ div.HorizonHand input[type=radio] {
 }
 div.KeptCardsContainer {
   display: inline-block;
+  vertical-align: top;
   margin-right: 40px;
 }
 div.CardsToDraftContainer {
   display: inline-block;
+  vertical-align: top;
+}
+div.CardsToDraftContainer input[type=submit] {
+  display: block;
 }

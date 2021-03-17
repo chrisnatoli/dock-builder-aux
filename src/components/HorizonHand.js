@@ -90,23 +90,19 @@ class HorizonHand extends React.Component {
                     onChange={this.handleChange}
                     />
 
-                  <HorizonCard
-                    card={card}
-                    checked={selectedOption===card.id}
-                    />
+                  <HorizonCard card={card} checked={selectedOption===card.id} />
                 </label>
               ))}
 
-              {
-                hand.length !== 0 &&
-                <input
-                  type="submit"
-                  value="Choose"
-                  disabled={disableSubmit}
-                  />
-              }
+              <input type="submit" value="Choose" disabled={disableSubmit} />
             </form>
+
+            {
+              isSubmitted &&
+              <p>(Waiting for other players to choose.)</p>
+            }
           </div>
+
         }
 
       </div>

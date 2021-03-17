@@ -4,6 +4,7 @@ import {
   HORIZON__DRAFTED_CARDS,
   HORIZON__UPDATE_HAND,
   HORIZON__UPDATE_KEPT_CARDS,
+  HORIZON__CHOSEN_CARD,
 } from '../SocketEvents';
 
 class HorizonHand extends React.Component {
@@ -27,6 +28,12 @@ class HorizonHand extends React.Component {
     socket.on(HORIZON__UPDATE_KEPT_CARDS,
       keptCards => this.setState({ keptCards, isSubmitted: false })
     );
+
+    // This is only needed in case a user disconnects and reconnects in the
+    // middle of a round of drafting.
+    socket.on(HORIZON__CHOSEN_CARD, (chosenCard) => {
+      this.setState({ selectedOption: chosenCard.id, isSubmitted: true })
+    });
   }
 
   handleChange = (event) => {
@@ -62,7 +69,7 @@ class HorizonHand extends React.Component {
 
         {
           keptCards.length > 0 &&
-          <div className="KeptCardsWrapper">
+          <div className="KeptCardsContainer">
             <p>Cards you kept:</p>
             {keptCards.map(card => <HorizonCard card={card} />)}
           </div>
@@ -70,7 +77,7 @@ class HorizonHand extends React.Component {
 
         {
           hand.length > 0 &&
-          <div className="CardsToDraftWrapper">
+          <div className="CardsToDraftContainer">
             <p>Cards to draft:</p>
 
             <form onSubmit={this.handleSubmit}>
@@ -94,7 +101,7 @@ class HorizonHand extends React.Component {
                 hand.length !== 0 &&
                 <input
                   type="submit"
-                  value="Keep"
+                  value="Choose"
                   disabled={disableSubmit}
                   />
               }

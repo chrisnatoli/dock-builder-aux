@@ -96,10 +96,10 @@ div.HorizonCard div.InsideCard {
 div.HorizonHand input[type=radio] {
   display: none;
 }
-div.KeptCardsWrapper {
+div.KeptCardsContainer {
   display: inline-block;
-  margin-right: 20px;
+  margin-right: 40px;
 }
-div.CardsToDraftWrapper {
+div.CardsToDraftContainer {
   display: inline-block;
 }

@@ -37,6 +37,7 @@ const {
   HORIZON__UPDATE_HAND,
   HORIZON__UPDATE_KEPT_CARDS,
   HORIZON__ENABLE_DEALING,
+  HORIZON__CHOSEN_CARD,
 } = require('./SocketEvents');
 
 const NOT_STARTED             = "NOT_STARTED";
@@ -51,10 +52,10 @@ let disconnectedUsers = [];
 let sockets = new Map(); // username => socket
 let gameLogMessages = [];
 let horizonDrawPile, horizonDiscardPile;
-let diceDict;  // username => dice array
-let horizonHands; // username => card array
+let diceDict;        // username => dice array
+let horizonHands;    // username => card array
 let chosenCardsDict; // username => card array
-let keptCardsDict; // username => card array
+let keptCardsDict;   // username => card array
 let passedCardsDict; // username => card array
 
 
@@ -80,19 +81,7 @@ io.on('connection', (socket) => {
     socket.username = username;
     usernames = [...usernames, username];
     sockets = new Map([...sockets, [username, socket]]);
-
-    /*
-    const dice = initDice(username)
-    diceDict = new Map([...diceDict, [username, dice]]);
-    horizonHands = new Map([ ...horizonHands, [username, []] ]);
-    keptCardsDict = new Map([ ...keptCardsDict, [username, []] ]);
-    */
-
     io.emit(UPDATE_USERNAME_LIST, usernames);
-    /*
-    socket.broadcast.emit(DICE__UPDATE, username, dice);
-    sendGameState(socket);
-    */
     gameLog(`${username} logged in.`);
   });
 
@@ -113,14 +102,13 @@ io.on('connection', (socket) => {
       socket.username = username;
       usernames = [...usernames, username];
       sockets = new Map([...sockets, [username, socket]]);
-
       io.emit(UPDATE_USERNAME_LIST, usernames);
       gameLog(`${username} reconnected.`);
+
     } else if (disconnectedUsers.includes(username)) {
       disconnectedUsers = disconnectedUsers.filter(u => u !== username);
       socket.username = username;
       sockets = new Map([...sockets, [username, socket]]);
-
       socket.emit(LOG_BACK_IN, username);
       sendGameState(socket);
       gameLog(`${username} reconnected.`);
@@ -130,9 +118,10 @@ io.on('connection', (socket) => {
   socket.on(START_GAME, () => {
     gameStep = ARRIVAL_PHASE_BEGINNING;
     ({ horizonDrawPile, horizonDiscardPile } = initHorizonDeck());
-    diceDict = new Map(usernames.map(u => [u, initDice(u)]));
-    horizonHands = new Map(usernames.map(u => [u, []]));
-    keptCardsDict = new Map(usernames.map(u => [u, []]));
+    diceDict        = new Map(usernames.map(u => [u, initDice(u)]));
+    horizonHands    = new Map(usernames.map(u => [u, []]));
+    chosenCardsDict = new Map(usernames.map(u => [u, []]));
+    keptCardsDict   = new Map(usernames.map(u => [u, []]));
 
     usernames.forEach(u => sendGameState(sockets.get(u)));
 
@@ -176,8 +165,8 @@ io.on('connection', (socket) => {
       newHands: horizonHands
     }= dealCards(horizonDrawPile, horizonDiscardPile, horizonHands, numToDeal));
 
-    chosenCardsDict = new Map();
-    keptCardsDict = new Map(usernames.map(u => [u, []]));
+    chosenCardsDict = new Map(usernames.map(u => [u, []]));
+    keptCardsDict   = new Map(usernames.map(u => [u, []]));
     passedCardsDict = new Map();
 
     gameStep = ARRIVAL_PHASE_DRAFTING;
@@ -207,7 +196,7 @@ io.on('connection', (socket) => {
       keptCardsDict = new Map([...keptCardsDict].map(
         ([u, keptCards]) => [u, [...keptCards, chosenCardsDict.get(u)] ]
       ));
-      chosenCardsDict = new Map();
+      chosenCardsDict = new Map(usernames.map(u => [u, []]));
 
       const isLastRound = horizonHands.get(username).length === 1;
       if (isLastRound) {
@@ -272,4 +261,5 @@ function sendGameState(socket) {
   socket.emit(HORIZON__UPDATE_DECK, horizonDrawPile, horizonDiscardPile);
   socket.emit(HORIZON__UPDATE_HAND, horizonHands.get(username));
   socket.emit(HORIZON__UPDATE_KEPT_CARDS, keptCardsDict.get(username));
+  socket.emit(HORIZON__CHOSEN_CARD, chosenCardsDict.get(username));
 }

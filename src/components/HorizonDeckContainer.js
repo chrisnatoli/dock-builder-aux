@@ -1,5 +1,6 @@
 import React from 'react';
 import HorizonCard from './HorizonCard';
+import HorizonDrawPile from './HorizonDrawPile';
 import {
   HORIZON__DEAL_CARDS,
   HORIZON__UPDATE_DECK,
@@ -7,7 +8,7 @@ import {
 } from '../SocketEvents';
 
 
-class HorizonDeck extends React.Component {
+class HorizonDeckContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -37,13 +38,11 @@ class HorizonDeck extends React.Component {
     const { drawPile, discardPile, isDealingEnabled } = this.state;
 
     return (
-      <div className="HorizonDeck container">
+      <div className="HorizonDeckContainer container">
         <h3>Horizon deck</h3>
 
         <p>Draw pile:</p>
-        {drawPile.map(card => (
-          <HorizonCard card={card} key={card.id} />
-        ))}
+        <HorizonDrawPile numCards={drawPile.length} />
 
         <br/>
 
@@ -62,4 +61,4 @@ class HorizonDeck extends React.Component {
   }
 }
 
-export default HorizonDeck;
+export default HorizonDeckContainer;

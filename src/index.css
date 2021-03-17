@@ -64,12 +64,26 @@ div.LogMessageContainer {
   overflow: auto;
 }
 
-div.LogMessage {
+
+div.HorizonDrawPile {
+  display: inline-block;
+  width: 60px;
+  height: 90px;
+  background-color: Gainsboro;
+  border-radius: 5px;
+  margin: 5px;
+}
+div.HorizonDrawPile div.InnerWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+div.HorizonDrawPile div.InnerWrapper p {
+  text-align: center;
+  font-size: 13px;
 }
 
-div.HorizonDeck button {
-  display: inline-block;
-}
 
 div.HorizonCard {
   display: inline-block;

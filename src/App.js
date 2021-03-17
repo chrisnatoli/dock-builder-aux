@@ -5,7 +5,7 @@ import LoginForm from './components/LoginForm';
 import UsernameList from './components/UsernameList';
 import GameLog from './components/GameLog';
 import DiceContainer from './components/DiceContainer';
-import HorizonDeck from './components/HorizonDeck';
+import HorizonDeckContainer from './components/HorizonDeckContainer';
 import HorizonHand from './components/HorizonHand';
 
 import {
@@ -106,7 +106,7 @@ class App extends React.Component {
                   ))}
                 </div>
 
-                <HorizonDeck socket={socket} numPlayers={usernameList.length} />
+                <HorizonDeckContainer socket={socket} />
                 <HorizonHand socket={socket} />
               </div>
               :

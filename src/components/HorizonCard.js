@@ -3,7 +3,6 @@ import { GiWoodenCrate } from 'react-icons/gi';
 
 function HorizonCard(props) {
   const { numGreen, numPurple, numOrange } = props.card;
-  console.log({ numGreen, numPurple, numOrange });
   return (
     <div className={`HorizonCard ${props.checked ? "highlighted" : ""}`}>
       <p>

@@ -183,13 +183,15 @@ io.on('connection', (socket) => {
   });
 
   socket.on(HORIZON__DRAFTED_CARDS, (chosenCard, passedCards) => {
+    // Record the user's choices and wait until all players have chosen.
     const username = socket.username;
     chosenCardsDict = new Map([...chosenCardsDict, [username, chosenCard]]);
     passedCardsDict = new Map([...passedCardsDict, [username, passedCards]]);
-
     gameLog(`${username} passed ${passedCards.length} `
       + `card${passedCards.length>1 ? "s" : ""}.`);
 
+    // Once all players have chosen their cards, pass hands around the table and
+    // update information accordingly.
     const everyoneReady = usernames.every(u => passedCardsDict.has(u));
     if (everyoneReady) {
       horizonHands = passCards(usernames, passedCardsDict);
@@ -198,18 +200,19 @@ io.on('connection', (socket) => {
       ));
       chosenCardsDict = new Map(usernames.map(u => [u, []]));
 
+      // In the last round of drafting, add the final passed cards directly into
+      // each player's array of kept cards.
       const isLastRound = horizonHands.get(username).length === 1;
       if (isLastRound) {
         usernames.forEach((username) => {
           const lastCard = horizonHands.get(username)[0];
-          updatedKeptCards = [...keptCardsDict.get(username), lastCard];
-          keptCardsDict = new Map(
-            [...keptCardsDict, [username, updatedKeptCards]]
-          );
+          keptCards = [...keptCardsDict.get(username), lastCard];
+          keptCardsDict = new Map([...keptCardsDict, [username, keptCards]]);
           horizonHands = new Map([ ...horizonHands, [username, []] ]);
         });
       }
 
+      // Send information to clients.
       usernames.forEach((username) => {
         const hand = horizonHands.get(username);
         const keptCards = keptCardsDict.get(username);

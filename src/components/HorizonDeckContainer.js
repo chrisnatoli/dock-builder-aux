@@ -45,7 +45,7 @@ class HorizonDeckContainer extends React.Component {
 
         <div className="DrawPileContainer">
           <p>Draw pile:</p>
-          <p class="NumCards">
+          <p className="NumCards">
             {`(${drawPile.length} card${drawPile.length!==1 ? "s" : ""})`}
           </p>
           <HorizonDeck />

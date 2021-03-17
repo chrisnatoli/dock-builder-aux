@@ -31,13 +31,35 @@ span.ThisUsername {
 }
 
 
-
-div.DiceContainersForOpponents div.DiceContainer {
-  display: inline-block;
+div.DiceFlexbox.ThisUser {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 }
-
-div.DiceOnTableContainer {
-  margin-top: 24px;
+div.DiceInBagContainer.ThisUser {
+  margin-right: 40px;
+  flex-basis: 25%;
+}
+div.DiceOnTableContainer.ThisUser {
+}
+div.DiceFlexbox.Opponent {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+div.DiceInBagContainer.Opponent {
+  width: 45%;
+}
+div.DiceOnTableContainer.Opponent {
+  width: 45%;
+}
+div.DiceContainersForOpponents {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
 }
 
 div.DieContainer {
@@ -69,7 +91,7 @@ div.LogMessageContainer {
 
 
 
-div.HorizonContainer {
+div.HorizonFlexbox {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;

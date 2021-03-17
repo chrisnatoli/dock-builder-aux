@@ -106,7 +106,7 @@ class App extends React.Component {
                   ))}
                 </div>
 
-                <div className="HorizonContainer">
+                <div className="HorizonFlexbox">
                   <HorizonDeckContainer socket={socket} />
                   <HorizonHand socket={socket} />
                 </div>

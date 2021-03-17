@@ -40,6 +40,7 @@ class DiceContainer extends React.Component {
   render() {
     const { socket, username, isForThisUser } = this.props;
     const { dice, isDrawingEnabled } = this.state;
+    const flexboxClass = isForThisUser ? "ThisUser" : "Opponent"
 
     let diceInBag = [], diceOnTable = [];
     if (dice) {
@@ -67,25 +68,27 @@ class DiceContainer extends React.Component {
       <div className="DiceContainer container">
         <h3>{`${username}'s dice`}</h3>
 
-        <div className="DiceInBagContainer">
-          <p>Dice in bag:</p>
-          {diceInBag.map(die => <DieIcon key={die.id} die={die} />)}
+        <div className={`DiceFlexbox ${flexboxClass}`}>
+          <div className={`DiceInBagContainer ${flexboxClass}`}>
+            <p>Dice in bag:</p>
+            {diceInBag.map(die => <DieIcon key={die.id} die={die} />)}
+            {
+              isForThisUser &&
+              <button
+                disabled={diceInBag.length===0 || !isDrawingEnabled}
+                onClick={this.drawDie}
+                >
+                Draw
+              </button>
+            }
+          </div>
+
+          <div className={`DiceOnTableContainer ${flexboxClass}`}>
+            <p>Dice on table:</p>
+            {diceOnTableRendered}
+          </div>
         </div>
 
-        {
-          isForThisUser &&
-          <button
-            disabled={diceInBag.length===0 || !isDrawingEnabled}
-            onClick={this.drawDie}
-            >
-            Draw
-          </button>
-        }
-
-        <div className="DiceOnTableContainer">
-          <p>Dice on table:</p>
-          {diceOnTableRendered}
-        </div>
       </div>
     );
   }

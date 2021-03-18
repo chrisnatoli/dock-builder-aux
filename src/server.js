@@ -11,8 +11,8 @@ const {
 } = require('./game_state/Deck');
 
 const PORT = process.env.PORT || 3030;
-//app.use(express.static(__dirname + '/../build')); // FOR BUILD
-app.use(express.static(__dirname + '/..'));        // FOR DEVELOPMENT
+app.use(express.static(__dirname + '/../build')); // FOR BUILD
+//app.use(express.static(__dirname + '/..'));        // FOR DEVELOPMENT
 server.listen(PORT, () => { console.log(`Connected to port ${PORT}`); });
 
 
@@ -147,7 +147,6 @@ io.on('connection', (socket) => {
     const allUsersVoted = usernames.every(u => endGameVotes.includes(u));
     if (allUsersVoted) {
       io.emit(END_GAME);
-      console.log("all users voted to end the game");
       gameStep = NOT_STARTED;
       usernames = [];
       disconnectedUsers = [];

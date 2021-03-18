@@ -52,9 +52,9 @@ class HorizonHand extends React.Component {
     const cardId = this.state.selectedOption;
     const { socket } = this.props;
     const { hand } = this.state;
-    const keptCard = hand.find(card => card.id === cardId);
+    const chosenCard = hand.find(card => card.id === cardId);
     const passedCards = hand.filter(card => card.id !== cardId);
-    socket.emit(HORIZON__DRAFTED_CARDS, keptCard, passedCards);
+    socket.emit(HORIZON__DRAFTED_CARDS, chosenCard, passedCards);
   }
 
   render() {

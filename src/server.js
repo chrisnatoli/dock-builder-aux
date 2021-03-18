@@ -144,7 +144,9 @@ io.on('connection', (socket) => {
       gameLog(`${username} voted to end the game.`);
     }
 
-    const allUsersVoted = usernames.every(u => endGameVotes.includes(u));
+    const allUsersVoted = usernames.every((u) => (
+      endGameVotes.includes(u) || disconnectedUsers.includes(u)
+    ));
     if (allUsersVoted) {
       io.emit(END_GAME);
       gameStep = NOT_STARTED;

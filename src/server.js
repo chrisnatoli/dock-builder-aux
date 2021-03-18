@@ -228,7 +228,7 @@ io.on('connection', (socket) => {
       keptCardsDict = new Map([...keptCardsDict].map(
         ([u, keptCards]) => [u, [...keptCards, chosenCardsDict.get(u)] ]
       ));
-      chosenCardsDict = new Map(usernames.map(u => [u, []]));
+      chosenCardsDict = new Map(usernames.map(u => [u, null]));
 
       // In the last round of drafting, add the final passed cards directly into
       // each player's array of kept cards.

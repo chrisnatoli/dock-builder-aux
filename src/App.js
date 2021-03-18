@@ -14,7 +14,8 @@ import {
   LOG_BACK_IN,
   UPDATE_USERNAME_LIST,
   START_GAME,
-  END_GAME_VOTE,
+  VOTE_TO_END_GAME,
+  END_GAME,
 } from './SocketEvents';
 
 //const socketUrl = "/";                        // FOR BUILD
@@ -53,6 +54,12 @@ class App extends React.Component {
     socket.on(START_GAME,
       isGameStarted => this.setState({ isGameStarted })
     );
+
+    socket.on(END_GAME, () => this.setState({
+      username: null,
+      usernameList: [],
+      isGameStarted: false,
+    }));
   }
 
   setUsername = (username) => {
@@ -69,7 +76,7 @@ class App extends React.Component {
   }
 
   endGameVote = () => {
-    this.state.socket.emit(END_GAME_VOTE);
+    this.state.socket.emit(VOTE_TO_END_GAME);
   }
 
   render() {

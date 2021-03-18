@@ -22,7 +22,8 @@ const {
   USER_LOGGED_IN,
   USER_RECONNECTED,
   START_GAME,
-  END_GAME_VOTE,
+  VOTE_TO_END_GAME,
+  END_GAME,
   DICE__DRAW_DIE,
   DICE__PUT_BACK,
   DICE__SET_DIE,
@@ -129,13 +130,14 @@ io.on('connection', (socket) => {
     horizonHands    = new Map(usernames.map(u => [u, []]));
     chosenCardsDict = new Map(usernames.map(u => [u, []]));
     keptCardsDict   = new Map(usernames.map(u => [u, []]));
+    passedCardsDict = new Map(usernames.map(u => [u, []]));
 
     usernames.forEach(u => sendGameState(sockets.get(u)));
 
     gameLog("The game started.");
   });
 
-  socket.on(END_GAME_VOTE, () => {
+  socket.on(VOTE_TO_END_GAME, () => {
     const username = socket.username;
     if (!endGameVotes.includes(username)) {
       endGameVotes = [...endGameVotes, username];
@@ -144,7 +146,14 @@ io.on('connection', (socket) => {
 
     const allUsersVoted = usernames.every(u => endGameVotes.includes(u));
     if (allUsersVoted) {
+      io.emit(END_GAME);
       console.log("all users voted to end the game");
+      gameStep = NOT_STARTED;
+      usernames = [];
+      disconnectedUsers = [];
+      sockets = new Map();
+      gameLogMessages = [];
+      endGameVotes = [];
     }
   });
 
@@ -256,6 +265,7 @@ io.on('connection', (socket) => {
 
 
 function gameLog(message) {
+  if (usernames.length === 0) { gameLogMessages = []; }
   gameLogMessages = [...gameLogMessages, message];
   io.emit(GAME_LOG_MESSAGE, gameLogMessages);
 }

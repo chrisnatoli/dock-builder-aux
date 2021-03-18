@@ -107,7 +107,7 @@ class App extends React.Component {
                   isForThisUser={true}
                   />
 
-                <div className="DiceContainersForOpponents">
+                <div className="OpponentsDiceFlexbox">
                   {opponents.map((username) => (
                     <DiceContainer
                       key={username}

@@ -55,11 +55,11 @@ div.DiceInBagContainer.Opponent {
 div.DiceOnTableContainer.Opponent {
   width: 45%;
 }
-div.DiceContainersForOpponents {
+div.OpponentsDiceFlexbox {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  justify-content: flex-start;
+  justify-content: space-between;
 }
 
 div.DieContainer {
@@ -95,12 +95,13 @@ div.HorizonFlexbox {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  justify-content: space-between;
 }
 div.HorizonDeckContainer {
-  flex-grow: 1;
+  flex-basis: 45%;
 }
 div.HorizonHand {
-  flex-grow: 1;
+  flex-basis: 45%;
 }
 
 div.HorizonCard {

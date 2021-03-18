@@ -32,7 +32,9 @@ class HorizonHand extends React.Component {
     // This is only needed in case a user disconnects and reconnects in the
     // middle of a round of drafting.
     socket.on(HORIZON__CHOSEN_CARD, (chosenCard) => {
-      this.setState({ selectedOption: chosenCard.id, isSubmitted: true })
+      if (chosenCard) {
+        this.setState({ selectedOption: chosenCard.id, isSubmitted: true });
+      }
     });
   }
 

@@ -128,7 +128,7 @@ io.on('connection', (socket) => {
     ({ horizonDrawPile, horizonDiscardPile } = initHorizonDeck());
     diceDict        = new Map(usernames.map(u => [u, initDice(u)]));
     horizonHands    = new Map(usernames.map(u => [u, []]));
-    chosenCardsDict = new Map(usernames.map(u => [u, []]));
+    chosenCardsDict = new Map(usernames.map(u => [u, null]));
     keptCardsDict   = new Map(usernames.map(u => [u, []]));
     passedCardsDict = new Map(usernames.map(u => [u, []]));
 
@@ -194,7 +194,7 @@ io.on('connection', (socket) => {
       newHands: horizonHands
     }= dealCards(horizonDrawPile, horizonDiscardPile, horizonHands, numToDeal));
 
-    chosenCardsDict = new Map(usernames.map(u => [u, []]));
+    chosenCardsDict = new Map(usernames.map(u => [u, null]));
     keptCardsDict   = new Map(usernames.map(u => [u, []]));
     passedCardsDict = new Map();
 

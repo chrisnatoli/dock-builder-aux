@@ -70,7 +70,7 @@ class HorizonHand extends React.Component {
         {
           keptCards.length > 0 &&
           <div className="KeptCardsContainer">
-            <p>Cards you kept:</p>
+            <p>Cards you kept</p>
             {keptCards.map(card => <HorizonCard card={card} />)}
           </div>
         }
@@ -78,7 +78,7 @@ class HorizonHand extends React.Component {
         {
           hand.length > 0 &&
           <div className="CardsToDraftContainer">
-            <p>Cards to draft:</p>
+            <p>Cards to draft</p>
 
             <form onSubmit={this.handleSubmit}>
               {hand.map(card => (

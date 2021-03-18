@@ -22,6 +22,7 @@ const {
   USER_LOGGED_IN,
   USER_RECONNECTED,
   START_GAME,
+  END_GAME_VOTE,
   DICE__DRAW_DIE,
   DICE__PUT_BACK,
   DICE__SET_DIE,
@@ -51,6 +52,7 @@ let usernames = [];
 let disconnectedUsers = [];
 let sockets = new Map(); // username => socket
 let gameLogMessages = [];
+let endGameVotes = [];
 let horizonDrawPile, horizonDiscardPile;
 let diceDict;        // username => dice array
 let horizonHands;    // username => card array
@@ -131,6 +133,19 @@ io.on('connection', (socket) => {
     usernames.forEach(u => sendGameState(sockets.get(u)));
 
     gameLog("The game started.");
+  });
+
+  socket.on(END_GAME_VOTE, () => {
+    const username = socket.username;
+    if (!endGameVotes.includes(username)) {
+      endGameVotes = [...endGameVotes, username];
+      gameLog(`${username} voted to end the game.`);
+    }
+
+    const allUsersVoted = usernames.every(u => endGameVotes.includes(u));
+    if (allUsersVoted) {
+      console.log("all users voted to end the game");
+    }
   });
 
   socket.on('ahoy', (username) => gameLog(`${username} said, Ahoy!`));

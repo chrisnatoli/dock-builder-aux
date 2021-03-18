@@ -70,7 +70,7 @@ class DiceContainer extends React.Component {
 
         <div className={`DiceFlexbox ${flexboxClass}`}>
           <div className={`DiceInBagContainer ${flexboxClass}`}>
-            <p>Dice in bag:</p>
+            <p>Dice in bag</p>
             {diceInBag.map(die => <DieIcon key={die.id} die={die} />)}
             {
               isForThisUser &&
@@ -84,7 +84,7 @@ class DiceContainer extends React.Component {
           </div>
 
           <div className={`DiceOnTableContainer ${flexboxClass}`}>
-            <p>Dice on table:</p>
+            <p>Dice on table</p>
             {diceOnTableRendered}
           </div>
         </div>

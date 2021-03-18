@@ -14,6 +14,7 @@ import {
   LOG_BACK_IN,
   UPDATE_USERNAME_LIST,
   START_GAME,
+  END_GAME_VOTE,
 } from './SocketEvents';
 
 //const socketUrl = "/";                        // FOR BUILD
@@ -67,6 +68,10 @@ class App extends React.Component {
     this.state.socket.emit('ahoy', this.state.username);
   }
 
+  endGameVote = () => {
+    this.state.socket.emit(END_GAME_VOTE);
+  }
+
   render() {
     const { socket, username, usernameList, isGameStarted } = this.state;
 
@@ -117,6 +122,7 @@ class App extends React.Component {
 
             <GameLog socket={socket} />
             <button onClick={this.sendAhoy}>Ahoy!</button>
+            <button onClick={this.endGameVote}>Vote to end the game</button>
           </div>
         }
       </div>

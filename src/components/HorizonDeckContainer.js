@@ -44,7 +44,7 @@ class HorizonDeckContainer extends React.Component {
         <h3>Horizon deck</h3>
 
         <div className="DrawPileContainer">
-          <p>Draw pile:</p>
+          <p>Draw pile</p>
           <p className="NumCards">
             {`(${drawPile.length} card${drawPile.length!==1 ? "s" : ""})`}
           </p>
@@ -56,7 +56,7 @@ class HorizonDeckContainer extends React.Component {
         </div>
 
         <div className="DiscardPileContainer">
-          <p>Discard pile:</p>
+          <p>Discard pile</p>
           <p class="NumCards">
             {`(${discardPile.length} card${discardPile.length!==1 ? "s" : ""})`}
           </p>

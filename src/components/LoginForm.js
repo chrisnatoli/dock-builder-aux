@@ -6,8 +6,8 @@ class LoginForm extends React.Component {
     super(props);
     this.textInput = React.createRef();
     this.state = {
-      username: "",
-      error: "",
+      username: '',
+      error: '',
       logBackInAs: null,
     };
   }
@@ -22,62 +22,72 @@ class LoginForm extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    this.props.socket.emit(CHECK_USERNAME,
-      this.state.username,
-      this.handleUsernameCheck
-    );
+    const { socket } = this.props;
+    const { username } = this.state;
+    socket.emit(CHECK_USERNAME, username, this.handleUsernameCheck);
   }
 
   handleUsernameCheck = (username, error) => {
-    switch(error) {
-      case "USER_DISCONNECTED":
+    const { setUsername } = this.props;
+    switch (error) {
+      case 'USER_DISCONNECTED':
         this.setState({
           logBackInAs: username,
-          error: "A user with this name had disconnected. "
-                 + `Are you trying to log back in as ${username}?`
+          error: 'A user with this name had disconnected. '
+                 + `Are you trying to log back in as ${username}?`,
         });
         break;
-      case "GAME_ALREADY_STARTED":
-        this.setState({ error: "Sorry, the game has already started." });
+      case 'GAME_ALREADY_STARTED':
+        this.setState({ error: 'Sorry, the game has already started.' });
         break;
-      case "USERNAME_TAKEN":
-        this.setState({ error: "This username is already taken." });
+      case 'USERNAME_TAKEN':
+        this.setState({ error: 'This username is already taken.' });
         break;
-      case "USERNAME_BLANK":
-        this.setState({ error: "Your username cannot be blank." });
+      case 'USERNAME_BLANK':
+        this.setState({ error: 'Your username cannot be blank.' });
         break;
       default:
-        this.setState({ error: "", logBackInAs: null });
-        this.props.setUsername(username);
+        this.setState({ error: '', logBackInAs: null });
+        setUsername(username);
     }
   }
 
   handleLogBackIn = () => {
-    const username = this.state.logBackInAs;
-    console.log(`Logging back in as ${username}`);
-    this.props.socket.emit(USER_RECONNECTED, username);
+    const { logBackInAs } = this.state;
+    const { socket } = this.props;
+    const username = logBackInAs;
+    socket.emit(USER_RECONNECTED, username);
   }
 
   render() {
+    const { username, error, logBackInAs } = this.state;
     return (
       <div>
         <form onSubmit={this.handleSubmit} className="LoginForm">
-          <label htmlFor="username">Name:</label>
-          <input
-            type="text"
-            id="username"
-            value={this.state.username}
-            onChange={this.handleChange}
-            ref={this.textInput}
+          <label htmlFor="username">
+            Name:
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={this.handleChange}
+              ref={this.textInput}
             />
+          </label>
           <input type="submit" value="Submit" />
         </form>
 
         <div className="error">
-          {this.state.error}
+          {error}
           {
-            this.state.logBackInAs
-            && <button onClick={this.handleLogBackIn}>Log back in</button>
+            logBackInAs && (
+              <button
+                onClick={this.handleLogBackIn}
+                type="button"
+              >
+                Log back in
+              </button>
+            )
           }
         </div>
       </div>

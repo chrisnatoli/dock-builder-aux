@@ -1,42 +1,43 @@
-const initHorizonDeck = () => {
-  let horizonDrawPile = shuffle(importHorizonCards());
+const horizonCardData = require('./HorizonCardData');
 
-  const horizonDiscardPile = horizonDrawPile.slice(-10);
-  horizonDrawPile = horizonDrawPile.slice(0,-10);
+const shuffle = (cards) => {
+  const newCards = [...cards];
+  let n = cards.length;
 
-  return { horizonDrawPile, horizonDiscardPile };
-}
+  while (n) {
+    const i = Math.floor(Math.random() * n);
+    n -= 1;
+    [newCards[i], newCards[n]] = [newCards[n], newCards[i]];
+  }
 
-const importHorizonCards = () => {
-  const cardData = require('./HorizonCardData');
-  return cardData.map(({ numGreen, numPurple, numOrange, numCopies }) => {
+  return newCards;
+};
+
+const importHorizonCards = () => (
+  horizonCardData.map(({ numGreen, numPurple, numOrange, numCopies }) => {
     const copies = [...Array(numCopies).keys()].map((i) => {
       const id = (
-        "horizoncard_"
+        'horizoncard_'
         + `${numGreen}g`
         + `${numPurple}p`
         + `${numOrange}o`
-        + `_copy${i+1}`
+        + `_copy${i + 1}`
       );
       const card = Object.freeze({ id, numGreen, numPurple, numOrange });
       return card;
     });
     return copies;
-  }).flat();
-}
+  }).flat()
+);
 
-const shuffle = (cards) => {
-  let newCards = [...cards];
-  let n = cards.length;
+const initHorizonDeck = () => {
+  let horizonDrawPile = shuffle(importHorizonCards());
 
-  while (n) {
-    const i = Math.floor(Math.random() * n);
-    n--;
-    [newCards[i], newCards[n]] = [newCards[n], newCards[i]];
-  }
+  const horizonDiscardPile = horizonDrawPile.slice(-10);
+  horizonDrawPile = horizonDrawPile.slice(0, -10);
 
-  return newCards;
-}
+  return { horizonDrawPile, horizonDiscardPile };
+};
 
 const drawCards = (drawPile, discardPile, hand, numCards) => {
   let newDrawPile = [...drawPile];
@@ -52,9 +53,9 @@ const drawCards = (drawPile, discardPile, hand, numCards) => {
   return {
     newDrawPile,
     newDiscardPile,
-    newHand: [...hand, ...topCards]
+    newHand: [...hand, ...topCards],
   };
-}
+};
 
 const dealCards = (drawPile, discardPile, hands, numToDeal) => {
   let newDrawPile = [...drawPile];
@@ -66,20 +67,20 @@ const dealCards = (drawPile, discardPile, hands, numToDeal) => {
     ({
       newDrawPile,
       newDiscardPile,
-      newHand
+      newHand,
     } = drawCards(newDrawPile, newDiscardPile, newHand, numToDeal));
     newHands = new Map([...newHands, [username, newHand]]);
   });
 
   return { newDrawPile, newDiscardPile, newHands };
-}
+};
 
 const passCards = (orderedUsernames, passedCardsDict) => {
   let newHands = new Map();
 
-  for (let i=0; i<orderedUsernames.length; i++) {
+  for (let i = 0; i < orderedUsernames.length; i += 1) {
     const thisUser = orderedUsernames[i];
-    const nextUserIndex = (i === orderedUsernames.length - 1) ? 0 : i+1;
+    const nextUserIndex = (i === orderedUsernames.length - 1) ? 0 : i + 1;
     const nextUser = orderedUsernames[nextUserIndex];
 
     const newHand = passedCardsDict.get(thisUser);
@@ -87,8 +88,6 @@ const passCards = (orderedUsernames, passedCardsDict) => {
   }
 
   return newHands;
-}
-
-
+};
 
 module.exports = { initHorizonDeck, drawCards, dealCards, passCards };

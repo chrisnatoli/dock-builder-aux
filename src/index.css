@@ -75,6 +75,9 @@ div.DieContainer label {
   display: block;
   margin-top: 10px;
 }
+select#DieSelector {
+  display: block;
+}
 
 span.DieIcon {
   font-size: 32px;

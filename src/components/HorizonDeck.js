@@ -7,7 +7,7 @@ function HorizonDeck(props) {
     numGreen: 0,
     numPurple: 0,
     numOrange: 0,
-  }
+  };
 
   return (
     <HorizonCard card={topCard || blankCard} />

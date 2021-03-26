@@ -6,7 +6,6 @@ import {
   HORIZON__ENABLE_DEALING,
 } from '../SocketEvents';
 
-
 class HorizonDeckContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -18,25 +17,26 @@ class HorizonDeckContainer extends React.Component {
   }
 
   componentDidMount() {
-    const socket = this.props.socket;
+    const { socket } = this.props;
 
-    socket.on(HORIZON__UPDATE_DECK,
-       (drawPile, discardPile) => this.setState({ drawPile, discardPile })
-    );
+    socket.on(HORIZON__UPDATE_DECK, (drawPile, discardPile) => (
+      this.setState({ drawPile, discardPile })
+    ));
 
-    socket.on(HORIZON__ENABLE_DEALING,
-      isDealingEnabled => this.setState({ isDealingEnabled })
-    );
+    socket.on(HORIZON__ENABLE_DEALING, (isDealingEnabled) => (
+      this.setState({ isDealingEnabled })
+    ));
   }
 
   dealCards = () => {
-    this.props.socket.emit(HORIZON__DEAL_CARDS);
+    const { socket } = this.props;
+    socket.emit(HORIZON__DEAL_CARDS);
   }
 
   render() {
     const { drawPile, discardPile, isDealingEnabled } = this.state;
     const lastDiscardedCard = (
-      discardPile.length!==0 ? discardPile[discardPile.length-1] : null
+      discardPile.length !== 0 ? discardPile[discardPile.length - 1] : null
     );
 
     return (
@@ -46,24 +46,31 @@ class HorizonDeckContainer extends React.Component {
         <div className="DrawPileContainer">
           <p>Draw pile</p>
           <p className="NumCards">
-            {`(${drawPile.length} card${drawPile.length!==1 ? "s" : ""})`}
+            {`(${drawPile.length} card${drawPile.length !== 1 ? 's' : ''})`}
           </p>
           <HorizonDeck />
 
-          <button onClick={this.dealCards} disabled={!isDealingEnabled}>
+          <button
+            onClick={this.dealCards}
+            disabled={!isDealingEnabled}
+            type="button"
+          >
             Deal
           </button>
         </div>
 
         <div className="DiscardPileContainer">
           <p>Discard pile</p>
-          <p class="NumCards">
-            {`(${discardPile.length} card${discardPile.length!==1 ? "s" : ""})`}
+          <p className="NumCards">
+            {
+              `(${discardPile.length}`
+              + `card${discardPile.length !== 1 ? 's' : ''})`
+            }
           </p>
           <HorizonDeck topCard={lastDiscardedCard} />
         </div>
       </div>
-      );
+    );
   }
 }
 

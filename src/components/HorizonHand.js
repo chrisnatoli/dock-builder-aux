@@ -21,13 +21,13 @@ class HorizonHand extends React.Component {
   componentDidMount() {
     const { socket } = this.props;
 
-    socket.on(HORIZON__UPDATE_HAND,
-      hand => this.setState({ hand, selectedOption: null })
-    );
+    socket.on(HORIZON__UPDATE_HAND, (hand) => (
+      this.setState({ hand, selectedOption: null })
+    ));
 
-    socket.on(HORIZON__UPDATE_KEPT_CARDS,
-      keptCards => this.setState({ keptCards, isSubmitted: false })
-    );
+    socket.on(HORIZON__UPDATE_KEPT_CARDS, (keptCards) => (
+      this.setState({ keptCards, isSubmitted: false })
+    ));
 
     // This is only needed in case a user disconnects and reconnects in the
     // middle of a round of drafting.
@@ -39,21 +39,22 @@ class HorizonHand extends React.Component {
   }
 
   handleChange = (event) => {
-    this.setState(prevState => {
+    this.setState((prevState) => {
       if (!prevState.isSubmitted) {
-       return { selectedOption: event.target.value };
+        return { selectedOption: event.target.value };
       }
+      return prevState;
     });
   }
 
   handleSubmit = (event) => {
     event.preventDefault();
     this.setState({ isSubmitted: true });
-    const cardId = this.state.selectedOption;
+    const { selectedOption, hand } = this.state;
     const { socket } = this.props;
-    const { hand } = this.state;
-    const chosenCard = hand.find(card => card.id === cardId);
-    const passedCards = hand.filter(card => card.id !== cardId);
+    const cardId = selectedOption;
+    const chosenCard = hand.find((card) => card.id === cardId);
+    const passedCards = hand.filter((card) => card.id !== cardId);
     socket.emit(HORIZON__DRAFTED_CARDS, chosenCard, passedCards);
   }
 
@@ -70,41 +71,46 @@ class HorizonHand extends React.Component {
         <h3>Your hand of Horizon cards</h3>
 
         {
-          keptCards.length > 0 &&
-          <div className="KeptCardsContainer">
-            <p>Cards you kept</p>
-            {keptCards.map(card => <HorizonCard card={card} />)}
-          </div>
+          keptCards.length > 0 && (
+            <div className="KeptCardsContainer">
+              <p>Cards you kept</p>
+              {keptCards.map((card) => <HorizonCard card={card} />)}
+            </div>
+          )
         }
 
         {
-          hand.length > 0 &&
-          <div className="CardsToDraftContainer">
-            <p>Cards to draft</p>
+          hand.length > 0 && (
+            <div className="CardsToDraftContainer">
+              <p>Cards to draft</p>
 
-            <form onSubmit={this.handleSubmit}>
-              {hand.map(card => (
-                <label key={card.id}>
-                  <input
-                    type="radio"
-                    value={card.id}
-                    checked={selectedOption===card.id}
-                    onChange={this.handleChange}
+              <form onSubmit={this.handleSubmit}>
+                {hand.map((card) => (
+                  <label key={card.id} htmlFor={`radio_${card.id}`}>
+                    <input
+                      id={`radio_${card.id}`}
+                      type="radio"
+                      value={card.id}
+                      checked={selectedOption === card.id}
+                      onChange={this.handleChange}
                     />
 
-                  <HorizonCard card={card} checked={selectedOption===card.id} />
-                </label>
-              ))}
+                    <HorizonCard
+                      card={card}
+                      checked={selectedOption === card.id}
+                    />
+                  </label>
+                ))}
 
-              <input type="submit" value="Choose" disabled={disableSubmit} />
-            </form>
+                <input type="submit" value="Choose" disabled={disableSubmit} />
+              </form>
 
-            {
-              isSubmitted &&
-              <p>(Waiting for other players to choose.)</p>
-            }
-          </div>
-
+              {
+                isSubmitted
+                && <p>(Waiting for other players to choose.)</p>
+              }
+            </div>
+          )
         }
 
       </div>

@@ -18,8 +18,8 @@ import {
   END_GAME,
 } from './SocketEvents';
 
-//const socketUrl = "/";                        // FOR BUILD
-const socketUrl = "http://192.168.0.101:3030"; // FOR DEVELOPMENT
+// const socketUrl = "/";                        // FOR BUILD
+const socketUrl = 'http://192.168.0.101:3030'; // FOR DEVELOPMENT
 
 class App extends React.Component {
   constructor(props) {
@@ -37,23 +37,21 @@ class App extends React.Component {
     this.setState({ socket });
 
     socket.on('connect', () => {
-      if (this.state.username) {
-        socket.emit(USER_RECONNECTED, this.state.username);
-        console.log(`Reconnected to server, my socket ID is ${socket.id}`);
-      } else {
-        console.log(`Connected to server, my socket ID is ${socket.id}`);
+      const { username } = this.state;
+      if (username) {
+        socket.emit(USER_RECONNECTED, username);
       }
     });
 
-    socket.on(LOG_BACK_IN, username => this.setState({ username }));
+    socket.on(LOG_BACK_IN, (username) => this.setState({ username }));
 
-    socket.on(UPDATE_USERNAME_LIST,
-      usernameList => this.setState({ usernameList })
-    );
+    socket.on(UPDATE_USERNAME_LIST, (usernameList) => (
+      this.setState({ usernameList })
+    ));
 
-    socket.on(START_GAME,
-      isGameStarted => this.setState({ isGameStarted })
-    );
+    socket.on(START_GAME, (isGameStarted) => (
+      this.setState({ isGameStarted })
+    ));
 
     socket.on(END_GAME, () => this.setState({
       username: null,
@@ -64,19 +62,23 @@ class App extends React.Component {
 
   setUsername = (username) => {
     this.setState({ username });
-    this.state.socket.emit(USER_LOGGED_IN, username);
+    const { socket } = this.state;
+    socket.emit(USER_LOGGED_IN, username);
   }
 
   startGame = () => {
-    this.state.socket.emit(START_GAME);
+    const { socket } = this.state;
+    socket.emit(START_GAME);
   }
 
   sendAhoy = () => {
-    this.state.socket.emit('ahoy', this.state.username);
+    const { socket, username } = this.state;
+    socket.emit('ahoy', username);
   }
 
   endGameVote = () => {
-    this.state.socket.emit(VOTE_TO_END_GAME);
+    const { socket } = this.state;
+    socket.emit(VOTE_TO_END_GAME);
   }
 
   render() {
@@ -84,53 +86,70 @@ class App extends React.Component {
 
     let opponents;
     if (username) {
-      opponents = usernameList.filter(u => u !== username);
+      opponents = usernameList.filter((u) => u !== username);
     }
 
     return (
       <div className="App">
         {
           !username
-          ?
-          <LoginForm socket={socket} setUsername={this.setUsername} />
-          :
-          <div className="Layout">
-            <UsernameList username={username} usernameList={usernameList} />
+            ? <LoginForm socket={socket} setUsername={this.setUsername} />
+            : (
+              <div className="Layout">
+                <UsernameList username={username} usernameList={usernameList} />
 
-            {
-              isGameStarted
-              ?
-              <div className="GameUI">
-                <DiceContainer
-                  socket={socket}
-                  username={username}
-                  isForThisUser={true}
-                  />
+                {
+                  isGameStarted
+                    ? (
+                      <div className="GameUI">
+                        <DiceContainer
+                          socket={socket}
+                          username={username}
+                          isForThisUser
+                        />
 
-                <div className="OpponentsDiceFlexbox">
-                  {opponents.map((username) => (
-                    <DiceContainer
-                      key={username}
-                      socket={socket}
-                      username={username}
-                      isForThisUser={false}
-                      />
-                  ))}
-                </div>
+                        <div className="OpponentsDiceFlexbox">
+                          {opponents.map((opponentUsername) => (
+                            <DiceContainer
+                              key={username}
+                              socket={socket}
+                              username={opponentUsername}
+                              isForThisUser={false}
+                            />
+                          ))}
+                        </div>
 
-                <div className="HorizonFlexbox">
-                  <HorizonDeckContainer socket={socket} />
-                  <HorizonHand socket={socket} />
-                </div>
+                        <div className="HorizonFlexbox">
+                          <HorizonDeckContainer socket={socket} />
+                          <HorizonHand socket={socket} />
+                        </div>
+                      </div>
+                    )
+                    : (
+                      <button
+                        onClick={this.startGame}
+                        type="button"
+                      >
+                        Start game
+                      </button>
+                    )
+                }
+
+                <GameLog socket={socket} />
+                <button
+                  onClick={this.sendAhoy}
+                  type="button"
+                >
+                  Ahoy!
+                </button>
+                <button
+                  onClick={this.endGameVote}
+                  type="button"
+                >
+                  Vote to end the game
+                </button>
               </div>
-              :
-              <button onClick={this.startGame}>Start game</button>
-            }
-
-            <GameLog socket={socket} />
-            <button onClick={this.sendAhoy}>Ahoy!</button>
-            <button onClick={this.endGameVote}>Vote to end the game</button>
-          </div>
+            )
         }
       </div>
     );

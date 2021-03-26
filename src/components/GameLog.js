@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { GAME_LOG_MESSAGE } from '../SocketEvents';
 
 class GameLog extends React.Component {
@@ -40,5 +41,12 @@ class GameLog extends React.Component {
     );
   }
 }
+
+GameLog.propTypes = {
+  socket: PropTypes.object,
+};
+GameLog.defaultProps = {
+  socket: null,
+};
 
 export default GameLog;

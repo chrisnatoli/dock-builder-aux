@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import HorizonDeck from './HorizonDeck';
 import {
   HORIZON__DEAL_CARDS,
@@ -36,7 +37,7 @@ class HorizonDeckContainer extends React.Component {
   render() {
     const { drawPile, discardPile, isDealingEnabled } = this.state;
     const lastDiscardedCard = (
-      discardPile.length !== 0 ? discardPile[discardPile.length - 1] : null
+      discardPile.length !== 0 ? discardPile[discardPile.length - 1] : undefined
     );
 
     return (
@@ -63,7 +64,7 @@ class HorizonDeckContainer extends React.Component {
           <p>Discard pile</p>
           <p className="NumCards">
             {
-              `(${discardPile.length}`
+              `(${discardPile.length} `
               + `card${discardPile.length !== 1 ? 's' : ''})`
             }
           </p>
@@ -73,5 +74,12 @@ class HorizonDeckContainer extends React.Component {
     );
   }
 }
+
+HorizonDeckContainer.propTypes = {
+  socket: PropTypes.object,
+};
+HorizonDeckContainer.defaultProps = {
+  socket: null,
+};
 
 export default HorizonDeckContainer;

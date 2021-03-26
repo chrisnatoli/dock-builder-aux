@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   FaDiceD6,
   FaDiceFour, FaDiceThree, FaDiceTwo, FaSquare,
@@ -34,5 +35,14 @@ function DieIcon(props) {
     </span>
   );
 }
+
+DieIcon.propTypes = {
+  die: PropTypes.shape({
+    id: PropTypes.string,
+    color: PropTypes.string,
+    value: PropTypes.string,
+    isOnTable: PropTypes.bool,
+  }).isRequired,
+};
 
 export default DieIcon;

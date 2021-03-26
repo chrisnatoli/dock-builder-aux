@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { GiWoodenCrate } from 'react-icons/gi';
 
 function HorizonCard(props) {
@@ -24,5 +25,18 @@ function HorizonCard(props) {
     </div>
   );
 }
+
+HorizonCard.propTypes = {
+  card: PropTypes.shape({
+    id: PropTypes.string,
+    numGreen: PropTypes.number,
+    numPurple: PropTypes.number,
+    numOrange: PropTypes.number,
+  }).isRequired,
+  checked: PropTypes.bool,
+};
+HorizonCard.defaultProps = {
+  checked: false,
+};
 
 export default HorizonCard;

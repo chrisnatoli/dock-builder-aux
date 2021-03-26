@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import HorizonCard from './HorizonCard';
 import {
   HORIZON__DRAFTED_CARDS,
@@ -74,7 +75,11 @@ class HorizonHand extends React.Component {
           keptCards.length > 0 && (
             <div className="KeptCardsContainer">
               <p>Cards you kept</p>
-              {keptCards.map((card) => <HorizonCard card={card} />)}
+              {
+                keptCards.map((card) => (
+                  <HorizonCard card={card} key={card.id} />
+                ))
+              }
             </div>
           )
         }
@@ -117,5 +122,12 @@ class HorizonHand extends React.Component {
     );
   }
 }
+
+HorizonHand.propTypes = {
+  socket: PropTypes.object,
+};
+HorizonHand.defaultProps = {
+  socket: null,
+};
 
 export default HorizonHand;

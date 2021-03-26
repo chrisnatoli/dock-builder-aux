@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import DieIcon from './DieIcon';
 import { DICE__PUT_BACK, DICE__SET_DIE } from '../SocketEvents';
 
@@ -58,5 +59,18 @@ class DieContainer extends React.Component {
     );
   }
 }
+
+DieContainer.propTypes = {
+  socket: PropTypes.object,
+  die: PropTypes.shape({
+    id: PropTypes.string,
+    color: PropTypes.string,
+    value: PropTypes.string,
+    isOnTable: PropTypes.bool,
+  }).isRequired,
+};
+DieContainer.defaultProps = {
+  socket: null,
+};
 
 export default DieContainer;

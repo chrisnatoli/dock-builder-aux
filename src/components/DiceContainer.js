@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import DieIcon from './DieIcon';
 import DieContainer from './DieContainer';
 import {
@@ -98,5 +99,14 @@ class DiceContainer extends React.Component {
     );
   }
 }
+
+DiceContainer.propTypes = {
+  socket: PropTypes.object,
+  username: PropTypes.string.isRequired,
+  isForThisUser: PropTypes.bool.isRequired,
+};
+DiceContainer.defaultProps = {
+  socket: null,
+};
 
 export default DiceContainer;

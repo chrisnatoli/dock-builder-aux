@@ -126,10 +126,7 @@ class App extends React.Component {
                       </div>
                     )
                     : (
-                      <button
-                        onClick={this.startGame}
-                        type="button"
-                      >
+                      <button onClick={this.startGame} type="button">
                         Start game
                       </button>
                     )

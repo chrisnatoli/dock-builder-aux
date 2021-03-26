@@ -1,4 +1,5 @@
 import React from 'react';
+import { PropTypes } from 'prop-types';
 import { CHECK_USERNAME, USER_RECONNECTED } from '../SocketEvents';
 
 class LoginForm extends React.Component {
@@ -94,5 +95,13 @@ class LoginForm extends React.Component {
     );
   }
 }
+
+LoginForm.propTypes = {
+  socket: PropTypes.object,
+  setUsername: PropTypes.func.isRequired,
+};
+LoginForm.defaultProps = {
+  socket: null,
+};
 
 export default LoginForm;

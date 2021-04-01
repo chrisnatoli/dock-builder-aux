@@ -4,9 +4,7 @@ import io from 'socket.io-client';
 import LoginForm from './components/LoginForm';
 import UsernameList from './components/UsernameList';
 import GameLog from './components/GameLog';
-import DiceContainer from './components/DiceContainer';
-import HorizonDeckContainer from './components/HorizonDeckContainer';
-import HorizonHand from './components/HorizonHand';
+import GameInterface from './components/GameInterface';
 
 import {
   USER_LOGGED_IN,
@@ -101,31 +99,12 @@ class App extends React.Component {
                 {
                   isGameStarted
                     ? (
-                      <div className="GameUI">
-                        <DiceContainer
-                          socket={socket}
-                          username={username}
-                          isForThisUser
-                        />
-
-                        <div className="OpponentsDiceFlexbox">
-                          {opponents.map((opponentUsername) => (
-                            <DiceContainer
-                              key={username}
-                              socket={socket}
-                              username={opponentUsername}
-                              isForThisUser={false}
-                            />
-                          ))}
-                        </div>
-
-                        <div className="HorizonFlexbox">
-                          <HorizonDeckContainer socket={socket} />
-                          <HorizonHand socket={socket} />
-                        </div>
-                      </div>
-                    )
-                    : (
+                      <GameInterface
+                        socket={socket}
+                        username={username}
+                        opponents={opponents}
+                      />
+                    ) : (
                       <button onClick={this.startGame} type="button">
                         Start game
                       </button>

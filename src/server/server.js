@@ -15,8 +15,13 @@ const {
 } = require('../game_state/Deck');
 
 const PORT = process.env.PORT || 3030;
-app.use(express.static(`${__dirname}/../../build`)); // FOR BUILD
-// app.use(express.static(`${__dirname}/..`)); // FOR DEVELOPMENT
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(express.static(`${__dirname}/..`));
+} else if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(`${__dirname}/../../build`));
+}
+
 server.listen(PORT, () => { console.log(`Connected to port ${PORT}`); });
 
 const {

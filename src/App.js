@@ -16,8 +16,12 @@ import {
   END_GAME,
 } from './SocketEvents';
 
-const socketUrl = '/'; // FOR BUILD
-// const socketUrl = 'http://192.168.0.101:3030'; // FOR DEVELOPMENT
+let socketUrl;
+if (process.env.NODE_ENV === 'development') {
+  socketUrl = 'http://192.168.0.101:3030';
+} else if (process.env.NODE_ENV === 'production') {
+  socketUrl = '/';
+}
 
 class App extends React.Component {
   constructor(props) {

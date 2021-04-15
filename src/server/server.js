@@ -7,12 +7,12 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server, { cors: { origin: '*' } });
 
-const { initDice, drawDie, putBack, setDie } = require('./game_state/Dice');
+const { initDice, drawDie, putBack, setDie } = require('../game_state/Dice');
 const {
   initHorizonDeck,
   dealCards,
   passCards,
-} = require('./game_state/Deck');
+} = require('../game_state/Deck');
 
 const PORT = process.env.PORT || 3030;
 // app.use(express.static(`${__dirname}/../build`)); // FOR BUILD
@@ -42,7 +42,7 @@ const {
   HORIZON__UPDATE_KEPT_CARDS,
   HORIZON__ENABLE_DEALING,
   HORIZON__CHOSEN_CARD,
-} = require('./SocketEvents');
+} = require('../SocketEvents');
 
 const NOT_STARTED = 'NOT_STARTED';
 const ARRIVAL_PHASE_BEGINNING = 'ARRIVAL_PHASE_BEGINNING';

@@ -21,10 +21,10 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "node src/server.js",
+    "start": "node src/server/server.js",
     "dev": "concurrently 'yarn run react' 'yarn run server'",
     "react": "react-scripts start",
-    "server": "nodemon src/server.js",
+    "server": "nodemon src/server/server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
